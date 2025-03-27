@@ -15,7 +15,7 @@
 </div>
 
 <!-- Search -->
-<div class="offers">
+
     <div class="search">
         
         <!-- Search Contents -->
@@ -31,7 +31,7 @@
 							class="search_tabs d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-between justify-content-start">
 							<div
 								class="search_tab active d-flex flex-row align-items-center justify-content-lg-center justify-content-start">
-									<a class="link" href="{% url 'Alojamientos' %}"><img src="{% static 'images/iconos/alojamientos.png' %} "
+									<a class="link" href="{% url 'alojamientos:Alojamientos' %}"><img src="{% static 'images/iconos/alojamientos.png' %} "
 											alt=""><span>alojamientos</span></a>
 							</div>
 							<div
@@ -58,77 +58,244 @@
 			</div>
 		</div>
     </div>
-</div>
 
-<!-- Search -->
-<div class="search">
-    <div class="search_inner">
-        <!-- Search Contents -->
-        <div class="container fill_height no-padding">
-            <div class="row fill_height no-margin">
-                <div class="col fill_height no-padding">
-                    <!-- Search Tabs -->
-                    <!-- Search Panel -->
-                    <div class="row">
-                        <div class="col-lg-1 temp_col"></div>
-                        <div class="col-lg-11">
-                            <!-- Offers Sorting -->
-                            <div class="offers_sorting_container">
-                                <ul class="offers_sorting">
-                                    <li>
-                                        <span class="sorting_text">precio</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "original-order" }' data-parent=".price_sorting"><span>show all</span></li>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "price" }' data-parent=".price_sorting"><span>ascending</span></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="sorting_text">ubicación</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "original-order" }'><span>default</span></li>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "name" }'><span>alphabetical</span></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="sorting_text">estrellas</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="filter_btn" data-filter="*"><span>show all</span></li>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "stars" }'><span>ascending</span></li>
-                                            <li class="filter_btn" data-filter=".rating_3"><span>3</span></li>
-                                            <li class="filter_btn" data-filter=".rating_4"><span>4</span></li>
-                                            <li class="filter_btn" data-filter=".rating_5"><span>5</span></li>
-                                        </ul>
-                                    </li>
-                                    <li class="distance_item">
-                                        <span class="sorting_text">distancia del centro</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="num_sorting_btn"><span>distance</span></li>
-                                            <li class="num_sorting_btn"><span>distance</span></li>
-                                            <li class="num_sorting_btn"><span>distance</span></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="sorting_text">comentarios</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="num_sorting_btn"><span>review</span></li>
-                                            <li class="num_sorting_btn"><span>review</span></li>
-                                            <li class="num_sorting_btn"><span>review</span></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
+<!-- Offers -->
+
+<div class="offers">
+
+	<!-- Search -->
+
+	<div class="search">
+		<div class="search_inner">
+
+			<!-- Search Contents -->
+
+			<div class="container fill_height no-padding">
+				<div class="row fill_height no-margin">
+					<div class="col fill_height no-padding">
+
+						<!-- Search Tabs -->
+
+                        
+						<!-- Search Panel -->
+
+						<div class="row">
+							<div class="col-lg-1 temp_col"></div>
+							<div class="col-lg-11">
+
+								<!-- Offers Sorting -->
+								<div class="offers_sorting_container">
+									<ul class="offers_sorting">
+										<li>
+											<span class="sorting_text">precio</span>
+											<i class="fa fa-chevron-down"></i>
+											<ul>
+												<li class="sort_btn"
+													data-isotope-option='{ "sortBy": "original-order" }'
+													data-parent=".price_sorting"><span>show all</span></li>
+												<li class="sort_btn" data-isotope-option='{ "sortBy": "price" }'
+													data-parent=".price_sorting"><span>ascending</span></li>
+											</ul>
+										</li>
+										<li>
+											<span class="sorting_text">ubicación</span>
+											<i class="fa fa-chevron-down"></i>
+											<ul>
+												<li class="sort_btn"
+													data-isotope-option='{ "sortBy": "original-order" }'>
+													<span>default</span></li>
+												<li class="sort_btn" data-isotope-option='{ "sortBy": "name" }'>
+													<span>alphabetical</span></li>
+											</ul>
+										</li>
+										<li>
+											<span class="sorting_text">estrellas</span>
+											<i class="fa fa-chevron-down"></i>
+											<ul>
+												<li class="filter_btn" data-filter="*"><span>show all</span></li>
+												<li class="sort_btn" data-isotope-option='{ "sortBy": "stars" }'>
+													<span>ascending</span></li>
+												<li class="filter_btn" data-filter=".rating_3"><span>3</span></li>
+												<li class="filter_btn" data-filter=".rating_4"><span>4</span></li>
+												<li class="filter_btn" data-filter=".rating_5"><span>5</span></li>
+											</ul>
+										</li>
+										<li class="distance_item">
+											<span class="sorting_text">distancia del centro</span>
+											<i class="fa fa-chevron-down"></i>
+											<ul>
+												<li class="num_sorting_btn"><span>distance</span></li>
+												<li class="num_sorting_btn"><span>distance</span></li>
+												<li class="num_sorting_btn"><span>distance</span></li>
+											</ul>
+										</li>
+										<li>
+											<span class="sorting_text">comentarios</span>
+											<i class="fa fa-chevron-down"></i>
+											<ul>
+												<li class="num_sorting_btn"><span>review</span></li>
+												<li class="num_sorting_btn"><span>review</span></li>
+												<li class="num_sorting_btn"><span>review</span></li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	
+<!--Iniciamos con el contenido de los diferentes alojanientos-->
+<div class="container mt-5 pt-5">
+    <!-- Encabezado de la página -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="display-5 fw-bold">Descubre nuestros alojamientos</h2>
+            <p class="lead">Encuentra el lugar perfecto para tu próxima aventura</p>
+        </div>
+        <div class="col-md-4">
+            <form class="d-flex" method="GET" action="">
+                <input class="form-control me-2" type="search" placeholder="Buscar alojamientos" aria-label="Search" name="q">
+                <button class="btn btn-outline-primary" type="submit">Buscar</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Unified Filters Section -->
+
+    <form action="" method="GET" class="row g-3">
+        <!-- Categorías como primera línea de filtros -->
+        <div class="col-12 mb-3">
+            <label class="form-label text-primary fw-bold">Categorías</label>
+            <div class="d-flex flex-wrap gap-2">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="categoria" id="categoria_todos" value="" {% if not request.GET.categoria %}checked{% endif %}>
+                    <label class="form-check-label" for="categoria_todos">Todos</label>
+                </div>
+                {% for cat in categorias %}
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="categoria" id="categoria_{{ cat.id }}" value="{{ cat.id }}" {% if request.GET.categoria == cat.id|stringformat:'i' %}checked{% endif %}>
+                    <label class="form-check-label" for="categoria_{{ cat.id }}">{{ cat.nombre }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    
+        <!-- Botón para aplicar filtros -->
+        <div class="col-12 text-end mt-3">
+            <button type="submit" class="btn btn-secondary">Aplicar filtros</button>
+        </div>
+    </form>
+
+
+    <!-- Lista de alojamientos -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for alojamiento in alojamientos %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="position-relative">
+				<div class="offer_name"><a href="{% url 'alojamientos:alojamiento_detalle' alojamiento.id %}" >{{alojamiento.nombre}}</a></div>
+                
+                {% if alojamiento.imagen %}
+                <img src="{{ alojamiento.imagen.url }}" class="card-img-top" alt="{{ alojamiento.nombre }}" style="height: 200px; object-fit: cover;">
+				{% else %}
+                <img src="{% static 'images/alojamientos/default-alojamiento.jpg' %}" class="card-img-top" alt="{{ alojamiento.nombre }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                </div>
+				
+                <!-- Contenido de la tarjeta -->
+                
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title mb-0">{{ alojamiento.nombre }}</h5>
+                        <span class="badge bg-primary text-light"> $ {{ alojamiento.precio }} COP/noche</span>
+                    </div>
+                    
+                    <p class="card-text text-muted mb-2">{{ alojamiento.direccion }}</p>
+                    
+                    <div class="mb-3">
+                        {% for categoria in alojamiento.categorias.all %}
+                        <span class="badge bg-secondary text-light me-1">{{ categoria.nombre }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <p class="card-text">{{ alojamiento.descripcion|truncatewords:20 }}</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            {% if alojamiento.disponibilidad %}
+                            <span class="badge bg-success text-light">Disponible</span>
+                            {% else %}
+                            <span class="badge bg-danger text-light">No disponible</span>
+                            {% endif %}
+                            <small class="text-muted ms-2">{{ alojamiento.habitaciones_disponibles }} habitaciones</small>
                         </div>
+                        <a href="{% url 'alojamientos:alojamiento_detalle' alojamiento.id %}"  class="btn btn-outline-primary">Ver detalles</a>
                     </div>
                 </div>
             </div>
         </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No hay alojamientos disponibles en este momento.
+            </div>
+        </div>
+        {% endfor %}
     </div>
+
+    <!-- Paginación -->
+    {% if alojamientos.has_other_pages %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if alojamientos.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ alojamientos.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for i in alojamientos.paginator.page_range %}
+                    <li class="page-item {% if alojamientos.number == i %}active{% endif %}">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if alojamientos.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ alojamientos.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+
 <!--Iniciamos con el contenido de los diferentes alojanientos-->
 {% for alojamiento in alojamientos %}
 <!-- Offers -->
@@ -188,35 +355,5 @@
     </div>
 </div>
 {% endfor %}
-
-<!-- Categorías -->
-<section class="categorias-container">
-    <h3>Categorías</h3>
-    <hr>
-    <div class="categorias-grid">
-        <div class="categoria-card seleccionado" data-categoria="todos" onclick="filtrarAlojamientos('todos')">
-            <h4>Todos</h4>
-        </div>
-        {% for categoria in categorias %}
-        <div class="categoria-card" data-categoria="{{ categoria.nombre|lower }}" onclick="filtrarAlojamientos('{{ categoria.nombre|lower }}')">
-            <h4>{{ categoria.nombre }}</h4>
-        </div>
-        {% endfor %}
-    </div>
-</section>
-
-<section>
-    <div style="width:75%; background-color: #f8f9fa; margin:auto; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-        <h3 style="color: #343a40; text-align: center;">Comentarios</h3>
-        <hr style="border-top: 1px solid #dee2e6;">
-        {% for alojamiento in alojamientos %}
-        <div style="margin-bottom: 15px;">
-            <strong style="color: #007bff;">{{ alojamiento.autor }}</strong>
-            <p style="color: #6c757d;">{{ alojamiento.descripcion }}</p>
-        </div>
-        <hr style="border-top: 1px solid #dee2e6;">
-        {% endfor %}
-    </div>
-</section>
 
 {% endblock %}

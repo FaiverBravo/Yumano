@@ -1,95 +1,82 @@
-<!-- ESTA BASE MUESTRA UN MENÚ DE NAVEGACIÓN REDUCIDO-->
-
 <!DOCTYPE html>
 <html lang="es">
-<!-- Inicio HEAD -->
 <head>
-	
-	{% load static %} 
+    {% load static %}
+    <title>{% block title %}WakaTur{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Proyecto WakaTur">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/iconos/logof.svg' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/bootstrap4/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.theme.default.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/animate.css' %}">
+    
+	<!-- Leaflet CSS -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+	<!-- Bootstrap 5 CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">    
+	<!-- Bootstrap Icons -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
-	<title>
-		{% block title %}
-		
-		{% endblock %}
-	</title>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="description" content="Proyecto WakaTur">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link rel="shortcut icon" type="image/x-icon" href="{% static 'images/iconos/logof.svg' %}" >
-	<link rel="stylesheet" type="text/css" href="{% static 'styles/bootstrap4/bootstrap.min.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}" >
-	<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.theme.default.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/animate.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/about_styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/about_responsive.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/alojamiento_detalle.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/styles_dashboard.css' %}">
 	
-	
-	<link rel="stylesheet" type="text/css" href="{% static 'styles/about_styles.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'styles/about_responsive.css' %}">
-
-		
 </head>
-
-</head>
-
 <body>
-
-	<div class="super_container">
-
-		<!-- Header -->
-		<header class="header">
-			<!-- Barra superior -->
-
-			<div class="top_bar">
-				<div class="container">
-					<div class="row">
-						<div class="col d-flex flex-row ">
-							<div class="user_box_login user_box_link"><a href="{% url 'Inicio' %}">Inicio</a></div>
-							<div class="phone">+(75) 310-340 9882</div>
-							<div class="social">
-								<ul class="social_list">
-									<li class="social_list_item"><a href="#"><i class="fa fa-pinterest"
-												aria-hidden="true"></i></a></li>
-									<li class="social_list_item"><a href="#"><i class="fa fa-facebook"
-												aria-hidden="true"></i></a></li>
-									<li class="social_list_item"><a href="#"><i class="fa fa-twitter"
-												aria-hidden="true"></i></a></li>
-									<li class="social_list_item"><a href="#"><i class="fa fa-instagram"
-												aria-hidden="true"></i></a></li>
-									<li class="social_list_item"><a href="#"><i class="fa fa-linkedin"
-												aria-hidden="true"></i></a></li>
-								</ul>
-							</div>
-							<div class="user_box ml-auto ">
-								<div class="user_box ml-auto">
-									<div class="user_box_login user_box_link"><a href="/registro/"data-whatever="@mdo">Registro</a></div>
-									<!-- <div class="user_box_login user_box_link"><a href=""  data-toggle="modal" data-target="#modalRegistro" data-whatever="@mdo">Regístrate</a></div> -->
-									<div class="user_box_login user_box_link"><a href="../../admin/" data-whatever="@mdo">iniciar sesión</a></div>
-									<!-- <div class="user_box_register user_box_link"><a href=""  data-toggle="modal" data-target="#modalRegistro" data-whatever="@mdo">Hazte anfitrión</a></div> -->
-									<div class="user_box_register user_box_link"><a href="../../admin/" data-whatever="@mdo">admin</a></div>
-									
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- Menú de Navegación -->
-			
-			
-		</header>
-		
-	</div>
-	<!-- Contenido cambiante  -->
-
-{% block content %}
-
-
-{% endblock %}
-
-
-		<!-- Footer -->
+    <div class="super_container">
+        <header class="header">
+            <div class="top_bar">
+                <div class="container">
+                    <div class="row">
+                        <div class="col d-flex flex-row">
+                            <div class="user_box_login user_box_link"><a href="{% url 'Inicio' %}">Inicio</a></div>
+                            <div class="phone">+(75) 310-340 9882</div>
+                            <div class="social">
+                                <ul class="social_list">
+                                    <li class="social_list_item"><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+                                    <li class="social_list_item"><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                    <li class="social_list_item"><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                    <li class="social_list_item"><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                                    <li class="social_list_item"><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="user_box ml-auto">
+                                <div class="user_box_login user_box_link"><a href="/registro/" data-whatever="@mdo">Registro</a></div>
+                                <div class="user_box_login user_box_link"><a href="/login/" data-whatever="@mdo">Iniciar sesión</a></div>
+                                <div class="user_box_register user_box_link"><a href="/admin/" data-whatever="@mdo">admin</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main>
+            {% if messages %}
+            <br>
+                <div class="container mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </main>
+        <!-- Footer -->
 
 		<footer class="footer">
 			<div class="container">
@@ -100,7 +87,7 @@
 						<div class="footer_col">
 							<div class="footer_content footer_about">
 								<div class="logo_container footer_logo">
-									<div class="logo"><a href="{% url 'Inicio' %}"><img src="{% static 'images/iconos/logof.png ' %}" alt="">WAKATUR</a></div>
+									<div class="logo"><a href="{% url 'Inicio' %}"><img src="{% static 'images/iconos/logof.png ' %}" alt="">WakaTur</a></div>
 								</div>
 								<p class="footer_about_text">Aplicación web que facilita a los turistas de manera virtual ubicar todos los lugares como 
 									servicios que dispone la cultura Agustiniana de manera organizada, detallada y actualizada. </p>
@@ -140,7 +127,8 @@
 											<div class="contact_info_icon"><img src="{% static 'images/iconos/message.svg' %}" alt=""></div>
 										</div>
 										<div class="contact_info_text"><a
-											 href="mailto:faivertkd@gmail.com?subject=Consulta sobre el sitio web&body=Hola,%0A%0AQuisiera saber más detalles sobre el sitio web. Por favor, contáctame.%0A%0AGracias!">faivertkd@gmail.com</a></div>									</li>
+											href="mailto:faivertkd@gmail.com?subject=Consulta sobre el sitio web&body=Hola,%0A%0AQuisiera saber más detalles sobre el sitio web. Por favor, contáctame.%0A%0AGracias!">faivertkd@gmail.com</a></div>
+									</li>
 									<li class="contact_info_item d-flex flex-row">
 										<div>
 											<div class="contact_info_icon"><img src="{% static 'images/iconos/planet-earth.svg' %}" alt="">
@@ -148,7 +136,7 @@
 										</div>
 										<div class="contact_info_text"><a
 											href="https://faiverbravo.github.io/webPage/" target="_blank">www.faiverbravo.github.io/webPage</a>
-										</div>
+											</div>										
 									</li>
 								</ul>
 							</div>
@@ -159,7 +147,7 @@
 			</div>
 		</footer>
 
-		<!-- Copyright -->
+        <!-- Copyright -->
 
 		<div class="copyright">
 			<div class="container">
@@ -184,32 +172,20 @@
 				</div>
 			</div>
 		</div>
+     
 
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'styles/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'styles/bootstrap4/bootstrap.min.js' %}"></script>
+    <script src="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.js' %}"></script>
+    <script src="{% static 'plugins/easing/easing.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+	<script src="{% static 'js/galeria.js' %}"></script>
 	
-	
-  
-  
-
-	<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
-	<script src="{% static 'styles/bootstrap4/popper.js' %}"></script>
-	<script src="{% static 'styles/bootstrap4/bootstrap.min.js' %}"></script>
-	<script src="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.js' %}"></script>
-	<script src="{% static 'plugins/easing/easing.js' %}"></script>
-	<script src="{% static 'js/custom.js' %}"></script>
-
-	
-	<script src="{% static 'plugins/parallax-js-master/parallax.min.js' %}"></script>
-	<!-- Scritps de about  -->
-	<script src="{% static 'plugins/greensock/TweenMax.min.js' %}"></script>
-	<script src="{% static 'plugins/greensock/TimelineMax.min.js' %}"></script>
-	<script src="{% static 'plugins/scrollmagic/ScrollMagic.min.js' %}"></script>
-	<script src="{% static 'plugins/greensock/animation.gsap.min.js' %}"></script>
-	<script src="{% static 'plugins/greensock/ScrollToPlugin.min.js' %}"></script>
-	<script src="{% static 'js/about_custom.js' %}"></script>
-	<!-- Scritps de contact  -->
-	<script src="{% static 'js/contact_custom.js' %}"></script>
-
-	
+	<!-- Leaflet JS -->
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+	<!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

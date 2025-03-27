@@ -1,0 +1,20 @@
+
+{% extends "WakaTurApp/base1.html" %}
+
+{% load static %}
+
+{% block title %}	WakaTur │ Panel de Vendedor	{% endblock %}
+
+{% block content %}
+
+<br><br><br><br>
+<div class="text-center">
+    <h2>Bienvenido, {{ user.username }} 👋</h2>
+    <p>Has iniciado sesión correctamente.</p>
+    
+    <h2>🛍️ Panel de Tienda</h2>
+    <p>Aquí puedes administrar tus productos y ventas.</p>
+    <a href="{% url 'logout' %}" class="btn btn-secondary">Cerrar Sesión</a>
+</div>
+
+{% endblock %}

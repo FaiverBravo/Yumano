@@ -1,0 +1,8 @@
+<h3>Eliminar Imagen</h3>
+<p>¿Estás seguro de que deseas eliminar esta imagen?</p>
+<img src="{{ imagen.imagen.url }}" alt="Imagen" style="max-width: 100%; height: auto;">
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a href="{% url 'alojamientos:listar_imagenes' %}" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -1372,3 +1372,59 @@ section
 {
 	color: #FFFFFF;
 }
+
+
+/******************************
+/Formulario Styles
+******************************/
+body {
+	background-color: #f8f9fa;
+}
+.login-container {
+	max-width: 400px;
+	margin: 100px auto;	
+	padding: 25px;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.login-header {
+	text-align: center;
+	margin-bottom: 30px;
+}
+.login-logo {
+	width: 70px;
+	height: 70px;
+	background-color: #ffc107;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 15px;
+}
+.form-control:focus {
+	border-color: #ffc107;
+	box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+}
+.btn-warning {
+	background-color: #ffc107;
+	border-color: #ffc107;
+	font-weight: 500;
+	padding: 10px;
+}
+.btn-warning:hover {
+	background-color: #ffca2c;
+	border-color: #ffca2c;
+}
+.input-group-text {
+	background-color: #fff;
+	border-right: none;
+}
+.input-group .form-control {
+	border-left: none;
+}
+.register-link {
+	text-align: center;
+	margin-top: 20px;
+}
+

@@ -23,7 +23,8 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.theme.default.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/animate.css' %}">
-	
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="{% static 'styles/offers_styles.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'styles/offers_responsive.css' %}">
 
@@ -60,12 +61,9 @@
 							</div>
 							<div class="user_box ml-auto ">
 								<div class="user_box ml-auto">
-									<div class="user_box_login user_box_link"><a href="/registro/"data-whatever="@mdo">Registro</a></div>
-									<!-- <div class="user_box_login user_box_link"><a href=""  data-toggle="modal" data-target="#modalRegistro" data-whatever="@mdo">Regístrate</a></div> -->
-									<div class="user_box_login user_box_link"><a href="../../admin/" data-whatever="@mdo">iniciar sesión</a></div>
-									<!-- <div class="user_box_register user_box_link"><a href=""  data-toggle="modal" data-target="#modalRegistro" data-whatever="@mdo">Hazte anfitrión</a></div> -->
-									<div class="user_box_register user_box_link"><a href="../../admin/" data-whatever="@mdo">admin</a></div>
-									
+									<div class="user_box_login user_box_link"><a href="/registro/" data-whatever="@mdo">Registro</a></div>
+                                <div class="user_box_login user_box_link"><a href="/login/" data-whatever="@mdo">Iniciar sesión</a></div>
+									<div class="user_box_register user_box_link"><a href="/admin/" data-whatever="@mdo">admin</a></div>
 								</div>
 							</div>
 						</div>
@@ -142,21 +140,24 @@
 
 			</div>
 		</div>
-				
-		{% block content %}
-		
-		
-		{% endblock %}
-		
-		<!-- Contenido cambiante  -->
-
-		{% if messages %}
-			{% for message in messages %}
-				<div class="notification {{message.tags}}">
-					{{ message }}
-				</div>
-			{% endfor %}
-		{% endif %}		
+	
+		<main>
+            {% if messages %}
+			<br>
+                <div class="container mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </main>	
 
 
 		<!-- Footer -->
@@ -260,6 +261,73 @@
 
   </div>
   
+
+  <!-- Formulario de registro -->
+  <div class="modal fade" id="registroModal" tabindex="-1" role="dialog" aria-labelledby="registroModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="col"><h3 class="intro_title text-center">Registro</h3></div>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<h5 class="col-form-label text-center">Te damos la bienvenida a WakaTur</h3>
+			<div class="modal-body">
+				<form method="post" action="{% url 'registro' %}">
+					{% csrf_token %}
+					<div class="form-group">
+						<input type="text" id="username"name="username" placeholder="Usuario" required class="form-control" autofocus> 
+					</div>
+					<div class="form-group">
+						<input type="email" id="email" name="email" placeholder="Correo Electrónico" required class="form-control">
+					</div>
+					<div class="form-group">
+						<input type="password" id="password1" name="password1" placeholder="Contraseña" required class="form-control">
+					</div>
+					<div class="form-group">
+						<input type="password" id="password2" name="password2" placeholder="Confirmar Contraseña" required class="form-control">
+					</div>					  
+					<div class="form-group">
+						<button type="submit" value="" class="btn btn-warning btn-block">Registrarse</button>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Formulario de inicio de sesión -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="col"><h3 class="intro_title text-center">Iniciar sesión</h3></div>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<h5 class="col-form-label text-center">Te damos la bienvenida a WakaTur</h5>
+			<div class="modal-body">
+				<form method="post" action="{% url 'login' %}">
+					{% csrf_token %}
+					
+                    <div class="form-group">
+						<input type="text" id="username"name="username" placeholder="Usuario" required class="form-control" autofocus> 
+					</div>
+					<div class="form-group">
+						<input type="password" id="password" name="password" placeholder="Contraseña" required class="form-control">
+					</div>
+					<div class="form-group">
+						<button type="submit" value="IniciarSesion"class="btn btn-warning btn-block">Iniciar sesión</button>
+					</div>					
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 	<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'styles/bootstrap4/popper.js' %}"></script>
 	<script src="{% static 'styles/bootstrap4/bootstrap.min.js' %}"></script>
@@ -268,7 +336,9 @@
 	<script src="{% static 'plugins/parallax-js-master/parallax.min.js' %}"></script>
 	<script src="{% static 'js/offers_custom.js' %}"></script>
 	
-
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script
 </body>
 
 </html>

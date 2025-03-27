@@ -18,6 +18,9 @@
 
 	<link rel="shortcut icon" type="image/x-icon" href="{% static 'images/iconos/logof.svg' %}" >
 	<link rel="stylesheet" type="text/css" href="{% static 'styles/bootstrap4/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 	<link rel="stylesheet" type="text/css" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}" >
 	<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.theme.default.css' %}">
@@ -62,10 +65,8 @@
 							</div>
 							<div class="user_box ml-auto ">
 								<div class="user_box ml-auto">
-									<div class="user_box_login user_box_link"><a href="/registro/">Registro</a></div>
-									<!-- <div class="user_box_login user_box_link"><a href=""  data-toggle="modal" data-target="#modalRegistro" data-whatever="@mdo">Regístrate</a></div> -->
-									<div class="user_box_login user_box_link"><a href="/admin/" data-whatever="@mdo">iniciar sesión</a></div>
-									<!-- <div class="user_box_register user_box_link"><a href=""  data-toggle="modal" data-target="#modalRegistro" data-whatever="@mdo">Hazte anfitrión</a></div> -->
+									<div class="user_box_login user_box_link"><a href="/registro/" data-whatever="@mdo">Registro</a></div>
+                                	<div class="user_box_login user_box_link"><a href="/login/" data-whatever="@mdo">Iniciar sesión</a></div>
 									<div class="user_box_register user_box_link"><a href="/admin/" data-whatever="@mdo">admin</a></div>
 								</div>
 							</div>
@@ -146,10 +147,23 @@
 		</header>	
 		<!-- Contenido cambiante  -->
 
-{% block content %}
-
-
-{% endblock %}
+		<main>
+            {% if messages %}
+			<br>
+                <div class="container mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </main>
 
 
 		<!-- Footer -->
@@ -251,87 +265,14 @@
 
 	</div>
 	
-	<!-- Formulario de registro -->
-<div class="modal fade" id="modalRegistro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-		<div class="col"><h3 class="intro_title text-center">Hazte Anfitrión</h3></div>
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-        	</button>		
-		</div>
-	<h5 class="col-form-label text-center">Te damos la bienvenida a WakaTur</h5>
-      
-      <div class="modal-body">
-        <form action="" class="loginUsuario" method="post">
-
-			{% csrf_token %}
-			{{form}}
-          <!-- <div class="form-group">
-            <input type="text" class="form-control" id="nombre" placeholder="Nombres completos">
-          </div>
-		      <div class="form-group">
-            <input type="email" class="form-control" id="email" placeholder="Correo">
-          </div>
-		  <div class="form-group">
-            <input type="password" class="form-control" id="pass" placeholder="Contraseña">
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control" id="confirm_password" placeholder="Confirmar contraseña">
-          </div> -->
-        </form>
-      </div>
-      <div class="modal-footer">
-		<button type="submit" id="form_submit_button" class="form_submit_button button btn-block" style="margin-top: 0; margin-bottom:10px;">Registrarse</button>
-		<button type="button" id="form_cerrar" class="form_submit_button button " style="margin-top: 0; margin-bottom:10px;" data-dismiss="modal">Cerrar</button>
-			
-	</div>
-{{mensaje}}
-    </div>
-  </div>
-</div> 
-
-<!-- Formulario de inicio de sesión -->
-
-<div class="modal fade" id="modalEntrar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-	  <div class="modal-content">
-		<div class="modal-header">
-		  <div class="col"><h3 class="intro_title text-center">Iniciar sesión</h3></div>
-			  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-			  </button>		
-		  </div>
-	  <h5 class="col-form-label text-center">Te damos la bienvenida a WakaTur</h5>
-		
-		<div class="modal-body">
-		  <form>			
-			<div class="form-group">
-			  <label for="email" class="col-form-label">Correo</label>
-			  <input type="email" class="form-control" id="email">
-			</div>
-			<div class="form-group">
-			  <label for="pass" class="col-form-label">Contraseña</label>
-			  <input type="password" class="form-control" id="pass">
-			</div>			
-		  </form>
-		</div>
-		<div class="modal-footer">
-			<button type="button" id="form_submit_button" class="form_submit_button button btn-block" style="margin-top: 0; margin-bottom:10px;">Iniciar sesión</button>
-		    <button type="button" id="form_cerrar" class="form_submit_button button " style="margin-top: 0; margin-bottom:10px;" data-dismiss="modal">Cerrar</button>
-		             
-		     </div>
-		</div>
-	</div> 
-  </div>
-  
-
+	
 	<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'styles/bootstrap4/popper.js' %}"></script>
 	<script src="{% static 'styles/bootstrap4/bootstrap.min.js' %}"></script>
 	<script src="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.js' %}"></script>
 	<script src="{% static 'plugins/easing/easing.js' %}"></script>
 	<script src="{% static 'js/custom.js' %}"></script>
-
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	
 	
 
