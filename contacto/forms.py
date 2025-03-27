@@ -1,10 +1,21 @@
 from django import forms
 
-class FormularioContacto(forms.Form):
-    nombre=forms.CharField(label="Nombre", required=True)
-
-    email=forms.CharField(label="Email", required=True)
-
-    asunto=forms.CharField(label="Asunto", required=True)
-
-    mensaje=forms.CharField(label="Mensaje", widget=forms.Textarea, required=True)
+class ContactForm(forms.Form):
+    nombre = forms.CharField(
+        max_length=100, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tu Nombre'})
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Tu Email'})
+    )
+    asunto = forms.CharField(
+        max_length=150, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Asunto'})
+    )
+    mensaje = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Tu Mensaje', 'rows': 4}),
+        required=True
+    )

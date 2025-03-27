@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+#mapa {
+    position: absolute;
+    top: 36px;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+}
+/* ajustes para boton Inicio*/
+#backToHome {
+    background-color: #31124b;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    
+}
+#backToHome:hover {
+    opacity: 0.8;
+}    
+
+/* Ajusta la escala en posición 5px más abajo */
+.custom-scale-control {
+    margin-top: 5px !important; 
+    
+}
+
+/* 
+ .markerText {
+    position: absolute;
+    width:200px;
+ }   
+ .h3{
+   color: brown;
+   font-size: 30px;
+   }
+ .markerImg {
+    width:70px;
+    
+ }   */
+ /* quitamos atribución o datos de leaflet  */
+    
+.leaflet-control-attribution{
+     display: none;
+}
+ 

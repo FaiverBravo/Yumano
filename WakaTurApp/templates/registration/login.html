@@ -1,0 +1,69 @@
+
+{% extends "WakaTurApp/base1.html" %}
+
+{% load static %}
+
+{% block title %}	WakaTur │ Login	{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-lg rounded-3 border-0">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 70px; height: 70px;">
+                            <i class="fas fa-user fa-2x text-white"></i>
+                        </div>
+                        <h3>Bienvenido de nuevo</h3>
+                        <p class="text-muted">Ingresa tus credenciales para continuar</p>
+                    </div>
+                    
+                    <form method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="username" class="form-label">Usuario</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" id="username" name="username" placeholder="Ingresa tu nombre de usuario" 
+                                       required class="form-control" autofocus style="color: black;">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <a href="{% url 'password_reset' %}" class="text-decoration-none small">¿Olvidaste tu contraseña?</a>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" 
+                                       required class="form-control" style="color: black;">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" id="remember" class="form-check-input">
+                                <label for="remember" class="form-check-label">Mantener sesión iniciada</label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" value="IniciarSesion" class="btn btn-warning">
+                                <i class="fas fa-sign-in-alt me-2"></i>Iniciar sesión
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="register-link">
+                        <p>¿No tienes una cuenta? <a href="{% url 'registro' %}" class="text-decoration-none">Regístrate aquí</a></p>
+                    </div>
+                            
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

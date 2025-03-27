@@ -32,7 +32,7 @@
 						class="search_tabs d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-between justify-content-start">
 						<div
 							class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start">
-							<a class="link" href="{% url 'Alojamientos' %}"><img src="{% static 'images/iconos/alojamientos.png' %} "
+							<a class="link" href="{% url 'alojamientos:Alojamientos' %}"><img src="{% static 'images/iconos/alojamientos.png' %} "
 									alt=""><span>alojamientos</span></a>
 						</div>
 						<div
@@ -142,7 +142,6 @@
 									</ul>
 								</div>
 							</div>
-
 						</div>
 					</div>
 				</div>
@@ -217,7 +216,7 @@
 			</div>
 
 		</div>
-	</div>
+	
 
 	{% endfor %}
 

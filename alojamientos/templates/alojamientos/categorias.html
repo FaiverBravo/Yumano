@@ -1,0 +1,24 @@
+{% extends "WakaTurApp/base2.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2>Categorías de Alojamientos</h2>
+    {% if categorias %}
+        <ul class="list-group">
+            {% for categoria in categorias %}
+                <li class="list-group-item">
+                    <a href="{% url 'alojamientos_por_categoria' categoria.id %}">
+                        {{ categoria.nombre }}
+                    </a>
+                    <span class="badge bg-primary">{{ categoria.alojamientos.count }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay categorías disponibles en este momento.</p>
+    {% endif %}
+</div>
+{% endblock %}

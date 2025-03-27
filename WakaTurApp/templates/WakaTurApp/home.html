@@ -1,8 +1,0 @@
-{% block content %}
-    {% if user.is_autenticated %}
-        <h2>Welcome, {{user.username}} ! </h2>
-    {% else %}
-        <h2>You are not logged in</h2>
-        <a href="{% url 'login' %}"> Log In</a>
-    {% endif %}
-{% endblock %}
