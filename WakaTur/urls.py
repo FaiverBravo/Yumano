@@ -21,6 +21,7 @@ urlpatterns = [
     path('contacto/', include('contacto.urls')),    
     path('WakaTurApp/', include('django.contrib.auth.urls')), 
     path('WakaTurApp/', include('WakaTurApp.urls')), 
+    path('accounts/', include('django.contrib.auth.urls')),
 
     
    

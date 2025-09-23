@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Usuario
+from alojamientos.models import Alojamiento
+
 
 class RegistroForm(forms.ModelForm):
     password1 = forms.CharField(
@@ -89,3 +91,17 @@ class LoginForm(AuthenticationForm):
         initial=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
+
+
+class AlojamientoForm(forms.ModelForm):
+    class Meta:
+        model = Alojamiento
+        fields = ['nombre', 'direccion', 'coordenadas', 'descripcion', 'precio', 'imagen_principal']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del alojamiento'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
+            'coordenadas': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Latitud, Longitud'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descripción'}),
+            'precio': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Precio por noche'}),
+            'imagen_principal': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }

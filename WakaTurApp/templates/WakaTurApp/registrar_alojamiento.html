@@ -1,0 +1,12 @@
+{% extends "WakaTurApp/base1.html" %}
+
+{% block title %}Registrar Alojamiento{% endblock %}
+
+{% block content %}
+<h2>Registrar Alojamiento</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>
+{% endblock %}

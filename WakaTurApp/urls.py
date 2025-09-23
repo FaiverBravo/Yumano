@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import index, nosotros, mapa, registro, user_login, user_logout, dashboard_view, tu_funcion_vista
-
+from .views import index, nosotros, mapa, registro, user_login, user_logout, dashboard_view, registrar_alojamiento
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth import views as auth_views
 from django.conf import settings
@@ -14,7 +13,7 @@ urlpatterns = [
     path('login/', user_login, name='login'),
     path('logout/', user_logout, name='logout'),
     path('dashboard_view/', dashboard_view, name='dashboard_view'),
-    
+    path('registrar-alojamiento/', registrar_alojamiento, name='registrar_alojamiento'),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(
         template_name="WakaTurApp/registration/password_reset.html"), 
@@ -32,6 +31,6 @@ urlpatterns = [
         template_name="WakaTurApp/registration/password_reset_complete.html"), 
         name="password_reset_complete"
     ),
-    path('ruta/a/tu/vista/', tu_funcion_vista, name='tu_vista_para_procesar'),
+    
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

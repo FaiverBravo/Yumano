@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
-from .forms import RegistroForm, LoginForm
+from .forms import RegistroForm, LoginForm, AlojamientoForm
 from django.contrib import messages
 from alojamientos.models import Alojamiento, ImagenAlojamiento, Reserva
 from django.contrib.auth.decorators import login_required
@@ -136,3 +136,15 @@ def tu_funcion_vista(request):
     # Si no es POST, redirigir al dashboard
     return redirect('dashboard_view')
 
+@login_required
+def registrar_alojamiento(request):
+    if request.method == 'POST':
+        form = AlojamientoForm(request.POST, request.FILES)
+        if form.is_valid():
+            alojamiento = form.save(commit=False)
+            alojamiento.usuario = request.user  # Asocia el alojamiento al usuario actual
+            alojamiento.save()
+            return redirect('dashboard_view')
+    else:
+        form = AlojamientoForm()
+    return render(request, 'WakaTurApp/registrar_alojamiento.html', {'form': form})

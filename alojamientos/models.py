@@ -25,6 +25,7 @@ class Alojamiento(models.Model):
     horario = models.CharField(max_length=100)
     disponibilidad = models.BooleanField(default=True)
     habitaciones_disponibles = models.IntegerField(default=0)
+    imagen_principal = models.ImageField(upload_to='alojamientos/', blank=True, null=True)
     imagen = models.ImageField(upload_to='alojamientos/')
     categorias = models.ManyToManyField(Categoria, related_name='alojamientos')
     created = models.DateTimeField(auto_now_add=True)
