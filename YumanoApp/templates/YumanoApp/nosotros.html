@@ -1,0 +1,66 @@
+{% extends "YumanoApp/base_modern.html" %}
+
+{% load static %}
+
+{% block title %} YÚMANO │ Nosotros {% endblock %}
+
+{% block content %}
+
+<!-- Hero Banner Moderno -->
+<div class="hero-banner-modern mb-5" style="height: 45vh; min-height: 400px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('{% static "images/nosotros/nosotros_background.jpg" %}') center/cover no-repeat;">
+    <div class="container h-100 position-relative" style="z-index: 2;">
+        <div class="row h-100 align-items-center justify-content-center text-center">
+            <div class="col-lg-8 animate-fadeInUp">
+                <h1 class="display-3 fw-bold text-white mb-3 text-shadow">Sobre Nosotros</h1>
+                <p class="lead text-white mb-0 fw-light fs-4 text-shadow">Pasión por nuestra cultura y el turismo local.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5 pb-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <div class="position-relative">
+                <img src="{% static 'images/nosotros/intro2.jpg' %}" alt="YÚMANO Team" class="img-fluid rounded-5 shadow-lg">
+                <div class="position-absolute bottom-0 end-0 bg-success text-white p-4 rounded-4 m-3 shadow-sm d-none d-md-block" style="max-width: 200px; background: linear-gradient(45deg, #2D5A27, #3d7a35) !important;">
+                    <span class="display-6 fw-bold">100%</span>
+                    <p class="small mb-0">Comprometidos con el desarrollo local.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 ps-lg-5">
+            <h2 class="display-5 fw-bold mb-4">Ingenieros impulsando el turismo</h2>
+            <p class="lead text-secondary mb-4">YÚMANO nace en 2020 con el firme propósito de impulsar un proyecto de turismo local que incluya a todos los gremios bajo el lema <strong>Red ancestral, guía digital</strong>.</p>
+            
+            <div class="row g-4 mt-2">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3">
+                            <i class="fas fa-map-marked-alt text-success"></i>
+                        </div>
+                        <h5 class="mb-0">Ubicación Clara</h5>
+                    </div>
+                    <p class="text-muted small">Resolvemos el inconveniente de desubicación facilitando la navegación en San Agustín.</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                            <i class="fas fa-route text-primary"></i>
+                        </div>
+                        <h5 class="mb-0">Guía Detallada</h5>
+                    </div>
+                    <p class="text-muted small">Una herramienta que facilita la experiencia del viajero en cada paso de su aventura.</p>
+                </div>
+            </div>
+            
+            <hr class="my-5 opacity-25">
+            
+            <div class="blockquote">
+                <p class="fst-italic text-secondary">"Queremos que el viajero tenga una herramienta que le facilite la experiencia en su viaje por nuestra tierra ancestral."</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -23,7 +23,7 @@ def contacto(request):
             """
 
             email = EmailMessage(
-                subject="Mensaje desde App WakaTur",
+                subject="Mensaje desde App YÚMANO",
                 body=contenido,
                 from_email="faivertkd@gmail.com",
                 to=["faivertkd@gmail.com"],

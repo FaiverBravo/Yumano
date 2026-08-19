@@ -1,0 +1,54 @@
+{% extends "YumanoApp/base_modern.html" %}
+{% load static %}
+
+{% block title %}Registrar Mi Alojamiento | YÚMANO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold">Registrar Alojamiento</h1>
+                <p class="text-secondary lead">Comienza a recibir viajeros de todo el mundo en tu propiedad.</p>
+            </div>
+
+            <div class="form-card animate-fadeInUp">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row g-4">
+                        {% for field in form %}
+                        <div class="col-md-{% if field.name == 'descripcion' %}12{% else %}6{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small class="text-muted d-block mt-1">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mt-5 d-grid">
+                        <button type="submit" class="btn btn-premium btn-lg">
+                            <i class="fas fa-save me-2"></i>Guardar y Continuar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a href="{% url 'dashboard_view' %}" class="text-secondary text-decoration-none">
+                    <i class="fas fa-arrow-left me-1"></i> Volver al panel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

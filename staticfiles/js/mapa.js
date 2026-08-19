@@ -1,16 +1,34 @@
 // Creamos un mapa con Leaflet y añadir marcadores personalizados para mostrar información turística de San Agustín, Huila, Colombia
 // Autor: Faiver Bravo
 
+var userLocation = null;
+var routingControl = null;
+
 class CustomMarker {
-    constructor(lat, lng, icon, popupContent) {
+    constructor(lat, lng, icon, title, content = '') {
         this.lat = lat;
         this.lng = lng;
         this.icon = icon;
-        this.popupContent = popupContent;
+        this.title = title;
+        this.content = content;
     }
 
     createMarker() {
-        return L.marker([this.lat, this.lng], {icon: this.icon}).bindPopup(this.popupContent);
+        const popupContent = `
+            <div class="map-popup-modern" style="width: 220px;">
+                <h5 class="fw-bold mb-2">${this.title}</h5>
+                ${this.content}
+                <div class="d-grid gap-2 mt-3">
+                    <button class="btn btn-premium btn-sm rounded-pill" onclick="startRouting(${this.lat}, ${this.lng}, '${this.title}')">
+                        <i class="fas fa-directions me-1"></i> Ir ahora
+                    </button>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${this.lat},${this.lng}" target="_blank" class="btn btn-outline-dark btn-sm rounded-pill">
+                        <i class="fab fa-google me-1"></i> Google Maps
+                    </a>
+                </div>
+            </div>
+        `;
+        return L.marker([this.lat, this.lng], {icon: this.icon}).bindPopup(popupContent);
     }
 }
 
@@ -22,8 +40,8 @@ var geoIcon = new L.Icon({
     popupAnchor: [1, -34]
 });
 
-var turismoIcon = new L.Icon({
-    iconUrl: staticUrls.turismoIcon,
+var createStandardIcon = (url) => new L.Icon({
+    iconUrl: url,
     shadowUrl: staticUrls.Shadow,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -31,199 +49,303 @@ var turismoIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-var alojamientosIcon = new L.Icon({
-    iconUrl: staticUrls.alojamientosIcon,
-    shadowUrl: staticUrls.Shadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+var turismoIcon = createStandardIcon(staticUrls.turismoIcon);
+var alojamientosIcon = createStandardIcon(staticUrls.alojamientosIcon);
+var aventuraIcon = createStandardIcon(staticUrls.aventuraIcon);
+var gastronomiaIcon = createStandardIcon(staticUrls.gastronomiaIcon);
+var contactoIcon = createStandardIcon(staticUrls.contactoIcon);
+var serviciosIcon = createStandardIcon(staticUrls.serviciosIcon);
+var tiendasIcon = createStandardIcon(staticUrls.tiendasIcon);
 
-var aventuraIcon = new L.Icon({
-    iconUrl: staticUrls.aventuraIcon,
-    shadowUrl: staticUrls.Shadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+// Grupos de capas
+var turismo = L.layerGroup();
+var alojamientos = L.layerGroup();
+var gastronomia = L.layerGroup();
+var aventura = L.layerGroup();
+var servicios = L.layerGroup();
+var tiendas = L.layerGroup();
+var contacto = L.layerGroup();
 
-var gastronomiaIcon = new L.Icon({
-    iconUrl: staticUrls.gastronomiaIcon,
-    shadowUrl: staticUrls.Shadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+// Cargar datos dinámicos
+fetch('/api/map-data/')
+    .then(response => response.json())
+    .then(data => {
+        // Alojamientos
+        data.alojamientos.forEach(item => {
+            const content = item.imagen ? `<img width="100%" class="rounded-3 mb-2" src="${item.imagen}"><p class="small mb-0">${item.descripcion}</p>` : `<p class="small mb-0">${item.descripcion}</p>`;
+            new CustomMarker(item.lat, item.lng, alojamientosIcon, item.nombre, content)
+                .createMarker().addTo(alojamientos);
+        });
 
-var contactoIcon = new L.Icon({
-    iconUrl: staticUrls.contactoIcon,
-    shadowUrl: staticUrls.Shadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+        // Gastronomía
+        data.gastronomia.forEach(item => {
+            const content = item.imagen ? `<img width="100%" class="rounded-3 mb-2" src="${item.imagen}"><p class="small mb-0">${item.descripcion}</p>` : `<p class="small mb-0">${item.descripcion}</p>`;
+            new CustomMarker(item.lat, item.lng, gastronomiaIcon, item.nombre, content)
+                .createMarker().addTo(gastronomia);
+        });
 
-var serviciosIcon = new L.Icon({
-    iconUrl: staticUrls.serviciosIcon,
-    shadowUrl: staticUrls.Shadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+        // Experiencias (Aventura)
+        data.experiencias.forEach(item => {
+            const content = item.imagen ? `<img width="100%" class="rounded-3 mb-2" src="${item.imagen}"><p class="small mb-0">${item.descripcion}</p>` : `<p class="small mb-0">${item.descripcion}</p>`;
+            new CustomMarker(item.lat, item.lng, aventuraIcon, item.nombre, content)
+                .createMarker().addTo(aventura);
+        });
 
-var tiendasIcon = new L.Icon({
-    iconUrl: staticUrls.tiendasIcon,
-    shadowUrl: staticUrls.Shadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+        // Servicios
+        data.servicios.forEach(item => {
+            const content = item.imagen ? `<img width="100%" class="rounded-3 mb-2" src="${item.imagen}"><p class="small mb-0">${item.descripcion}</p>` : `<p class="small mb-0">${item.descripcion}</p>`;
+            new CustomMarker(item.lat, item.lng, serviciosIcon, item.nombre, content)
+                .createMarker().addTo(servicios);
+        });
+    });
 
-// Crear marcadores y grupos de capas
+// Marcadores Estáticos (Turismo y Contacto)
 var turismoMarkers = [
-    new CustomMarker(1.887648, -76.2949629, turismoIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Parque arquelógico San Agustín</h4><img width="100%" height="100%" src="' + staticUrls.lavapatasImage + '"><p>informate <a href="https://colombia.travel/es/visita-san-agustin-la-capital-arqueologica-de-colombia" target="_blank">aca</a></p></div>'),
-    new CustomMarker(1.88724803, -76.29549695, turismoIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Museo</h4><img width="100%" height="100%" src="' + staticUrls.lavapatasImage + '"><p>informate <a href="https://colombia.travel/es/visita-san-agustin-la-capital-arqueologica-de-colombia" target="_blank">aca</a></p></div>'),
-    new CustomMarker(1.88663907, -76.29590293, turismoIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Bosque de las Estatuas</h4><img width="100%" height="100%" src="' + staticUrls.lavapatasImage + '"><p>informate <a href="https://colombia.travel/es/visita-san-agustin-la-capital-arqueologica-de-colombia" target="_blank">aca</a></p></div>'),
-    new CustomMarker(1.88303662, -76.2943809, turismoIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Mesita A</h4><img width="100%" height="100%" src="' + staticUrls.lavapatasImage + '"><p>informate <a href="https://colombia.travel/es/visita-san-agustin-la-capital-arqueologica-de-colombia" target="_blank">aca</a></p></div>'),
-    new CustomMarker(1.88419942, -76.29612945, turismoIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Mesita B</h4><img width="100%" height="100%" src="' + staticUrls.lavapatasImage + '"><p>informate <a href="https://colombia.travel/es/visita-san-agustin-la-capital-arqueologica-de-colombia" target="_blank">aca</a></p></div>'),
-    new CustomMarker(1.88068292, -76.29795741, turismoIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Mesita C</h4><img width="100%" height="100%" src="' + staticUrls.lavapatasImage + '"><p>informate <a href="https://colombia.travel/es/visita-san-agustin-la-capital-arqueologica-de-colombia" target="_blank">aca</a></p></div>'),
-    new CustomMarker(1.88077357, -76.29916174, turismoIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Fuente Ceremonial de Lavapatas</h4><img width="100%" height="100%" src="' + staticUrls.lavapatasImage + '"><p>informate <a href="https://colombia.travel/es/visita-san-agustin-la-capital-arqueologica-de-colombia" target="_blank">aca</a></p></div>')
+    new CustomMarker(1.887648, -76.2949629, turismoIcon, 'Parque Arqueológico', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.lavapatasImage}"><p class="small mb-0">Capital arqueológica de Colombia.</p>`),
+    new CustomMarker(1.88724803, -76.29549695, turismoIcon, 'Museo Arqueológico', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.lavapatasImage}">`),
+    new CustomMarker(1.88663907, -76.29590293, turismoIcon, 'Bosque de las Estatuas', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.lavapatasImage}">`),
+    new CustomMarker(1.88303662, -76.2943809, turismoIcon, 'Mesita A', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.lavapatasImage}">`),
+    new CustomMarker(1.88419942, -76.29612945, turismoIcon, 'Bosque de las Estatuas B', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.lavapatasImage}">`),
+    new CustomMarker(1.88068292, -76.29795741, turismoIcon, 'Bosque de las Estatuas C', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.lavapatasImage}">`),
+    new CustomMarker(1.88077357, -76.29916174, turismoIcon, 'Fuente de Lavapatas', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.lavapatasImage}">`),
+    new CustomMarker(1.880354,-76.303214, turismoIcon, 'Fuente de Lavapatas', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.lavapatasImage}">`),
+    new CustomMarker(1.890394, -76.381300, turismoIcon, 'Cascada Los Tres Chorros', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.lavapatasImage}">`), 
+    
 ];
-
-var turismo = L.layerGroup(turismoMarkers.map(marker => marker.createMarker()));
-
-var alojamientosMarkers = [
-    new CustomMarker(1.884916, -76.281095, alojamientosIcon, '<b>Hotel Arqueologico San Agustin</b>'),
-    new CustomMarker(1.890318, -76.283683, alojamientosIcon, '<b>Hotel Alto de los Andaquies</b>'),
-    new CustomMarker(1.892315, -76.281074, alojamientosIcon, '<b>Akawanka Lodge</b>')
-];
-
-var alojamientos = L.layerGroup(alojamientosMarkers.map(marker => marker.createMarker()));
-
-var gastronomiaMarkers = [
-    new CustomMarker(1.886418, -76.277312, gastronomiaIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Doña Nury</h4><img width="100%" height="100%" src="' + staticUrls.doñaNury1Image + '"><p>informate <a href="http://127.0.0.1:8000/WakaTurApp/" target="_blank">aca</a></p></div>'),
-    new CustomMarker(1.885837, -76.275916, gastronomiaIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Andrés a la Parrilla</h4><img width="100%" height="100%" src="' + staticUrls.r2Image + '"><p>informate <a href="http://127.0.0.1:8000/WakaTurApp/" target="_blank">aca</a></p></div>'),
-    new CustomMarker(1.88701, -76.279091, gastronomiaIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Donde Richard</h4><img width="100%" height="100%" src="' + staticUrls.dondeRichard1Image + '"><p>informate <a href="http://127.0.0.1:8000/WakaTurApp/" target="_blank">aca</a></p></div>'),
-    new CustomMarker(1.886268, -76.277034, gastronomiaIcon, '<div align="center" style="height: auto; width: 200px;"><h4>Malibú</h4><img width="100%" height="100%" src="' + staticUrls.malibu1Image + '"><p>informate <a href="https://linktr.ee/malibugastrobar" target="_blank">aca</a></p></div>')
-];
-
-var gastronomia = L.layerGroup(gastronomiaMarkers.map(marker => marker.createMarker()));
-
-var aventuraMarkers = [
-    new CustomMarker(1.885647, -76.275032, aventuraIcon, '<b>Alquiler de Caballos</b>'),
-    new CustomMarker(1.882203, -76.277286, aventuraIcon, '<b>Magdalena Rafting</b>'),
-    new CustomMarker(1.882963, -76.252714, aventuraIcon, '<b>Adrenalina Extrema Cañon del Magdalena</b>')
-];
-
-var aventura = L.layerGroup(aventuraMarkers.map(marker => marker.createMarker()));
-
-var serviciosMarkers = [
-    new CustomMarker(1.881476, -76.270762, serviciosIcon, '<b>Cajero ATH Utrahuilca San Agustin I - Banco de Bogotá</b>'),
-    new CustomMarker(1.879131, -76.270065, serviciosIcon, '<b>Estacion de gasolina, Sur Andina TERPEL</b>'),
-    new CustomMarker(1.881455, -76.271182, serviciosIcon, '<b>Taxis Verdes</b>')
-];
-
-var servicios = L.layerGroup(serviciosMarkers.map(marker => marker.createMarker()));
-
-var tiendasMarkers = [
-    new CustomMarker(1.884632, -76.273579, tiendasIcon, '<b>Artesanías</b>'),
-    new CustomMarker(1.880257, -76.271148, tiendasIcon, '<b>Plaza de Mercado Campesino</b>'),
-    new CustomMarker(1.881822, -76.273193, tiendasIcon, '<b>Supermercado Olimpica</b>')
-];
-
-var tiendas = L.layerGroup(tiendasMarkers.map(marker => marker.createMarker()));
+turismoMarkers.forEach(m => m.createMarker().addTo(turismo));
 
 var contactoMarkers = [
-    new CustomMarker(1.886188, -76.277412, contactoIcon, '<div align="center" style="height: auto; width: 200px;font-size: 14px;"><h2>FBRAVO</h2><p>Publica con nosotros</p><img width="100%" height="100%" src="' + staticUrls.logofbravoImage + '"><p>informate <a href="http://127.0.0.1:8000/contacto/"">aca</a></p></div>')
+    new CustomMarker(1.886188, -76.277412, contactoIcon, 'FBRAVO Support', `<img width="100%" class="rounded-3 mb-2" src="${staticUrls.logofbravoImage}"><p class="small">Publica con nosotros.</p>`)
 ];
-
-var contacto = L.layerGroup(contactoMarkers.map(marker => marker.createMarker()));
+contactoMarkers.forEach(m => m.createMarker().addTo(contacto));
 
 // Añadir control de capas
-var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
-});
-
-var esriWorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 19,
-    attribution: 'Tiles © Esri'
-});
-
-var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'
-});
+var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
+var esriWorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Tiles © Esri' });
+var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap France' });
 
 var mapa = L.map('mapa', {
     center: [1.886188, -76.277412],
     zoom: 15,
+    zoomControl: false,
     layers: [osm, turismo, alojamientos, gastronomia, aventura, servicios, tiendas, contacto]
 });
 
-var baseMaps = {
-    "OpenStreetMap": osm,
-    "Esri World Imagery": esriWorldImagery,
-    "OpenStreetMap.HOT": osmHOT    
-};
+// Re-añadir control de zoom en una posición más cómoda
+L.control.zoom({ position: 'bottomright' }).addTo(mapa);
 
-var overlayMaps = {
-    "Turismo": turismo,
-    "Gastronomía": gastronomia,
-    "Alojamientos": alojamientos,
-    "Contacto": contacto,
-    "Servicios": servicios,
-    "Tiendas": tiendas,
-    "Aventura": aventura
-};
+// El control nativo L.control.layers ha sido eliminado para usar los chips de filtro y el conmutador premium satelital.
 
-var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(mapa);
+// Control de Escala
+L.control.scale({ metric: true, imperial: false, position: 'bottomleft' }).addTo(mapa);
 
-// Añadir control de escala con clase personalizada
-L.control.scale({
-    metric: true,
-    imperial: false,
-    position: 'topleft',
-}).addTo(mapa).getContainer().classList.add('custom-scale-control');
+// Lógica de Ruteo
+function startRouting(destLat, destLng, destName) {
+    if (!userLocation) {
+        alert("Primero necesitamos conocer tu ubicación. Por favor, activa el GPS.");
+        mapa.locate({setView: true, maxZoom: 16});
+        return;
+    }
 
-// Función de geolocalización
+    if (routingControl) {
+        mapa.removeControl(routingControl);
+    }
+
+    routingControl = L.Routing.control({
+        waypoints: [
+            L.latLng(userLocation.lat, userLocation.lng),
+            L.latLng(destLat, destLng)
+        ],
+        language: 'es',
+        routeWhileDragging: true,
+        showAlternatives: true,
+        createMarker: function() { return null; }, // No crear marcadores extra
+        lineOptions: {
+            styles: [{ color: '#2D5A27', opacity: 0.8, weight: 6 }]
+        }
+    }).addTo(mapa);
+
+    // Mostrar panel de instrucciones
+    document.getElementById('routing-panel').classList.remove('d-none');
+    routingControl.on('routesfound', function(e) {
+        const routes = e.routes;
+        const summary = routes[0].summary;
+        const detailsHtml = `
+            <div class="p-2">
+                <p class="mb-1 text-success"><b>Destino:</b> ${destName}</p>
+                <div class="d-flex justify-content-between mb-2">
+                    <span><i class="fas fa-car me-1"></i> ${(summary.totalDistance / 1000).toFixed(1)} km</span>
+                    <span><i class="fas fa-clock me-1"></i> ${Math.round(summary.totalTime / 60)} min</span>
+                </div>
+                <hr class="my-2">
+                <div class="instructions-list small">
+                    ${routes[0].instructions.map(i => `<div class="mb-1 border-bottom pb-1">${i.text}</div>`).join('')}
+                </div>
+            </div>
+        `;
+        document.getElementById('routing-details').innerHTML = detailsHtml;
+    });
+    
+    mapa.closePopup();
+}
+
+function closeRouting() {
+    if (routingControl) {
+        mapa.removeControl(routingControl);
+        routingControl = null;
+    }
+    document.getElementById('routing-panel').classList.add('d-none');
+}
+
+// Geolocalización mejorada
 mapa.locate({setView: true, maxZoom: 16});
 
-function onLocationFound(e) {
+mapa.on('locationfound', function(e) {
+    userLocation = e.latlng;
     var radius = e.accuracy / 2;
 
-    L.marker(e.latlng, {icon: geoIcon}).bindPopup('<b>Estoy Aquí !</b>').addTo(mapa)
-        .bindPopup("Estás a " + radius + " metros de este punto").openPopup();
+    if (window.userMarker) {
+        mapa.removeLayer(window.userMarker);
+        mapa.removeLayer(window.userCircle);
+    }
 
-    L.circle(e.latlng, radius).addTo(mapa);
-}
-
-mapa.on('locationfound', onLocationFound);
-
-function onLocationError(e) {
-    alert("No es posible encontrar su ubicación. Es posible que tenga que activar la geolocalización.");
-}
-
-mapa.on('locationerror', onLocationError);
-
-// Agregar logo
-L.Control.Watermark = L.Control.extend({
-    onAdd: function(mapa) {
-        var img = L.DomUtil.create('img');
-        img.src = staticUrls.milestoneIcon;
-        img.style.width = '40px';
-        return img;
-    },
-    onRemove: function(mapa) {},
+    window.userMarker = L.marker(e.latlng, {icon: geoIcon}).addTo(mapa).bindPopup("Estás aquí (margen de " + Math.round(radius) + "m)");
+    window.userCircle = L.circle(e.latlng, radius, { color: '#2D5A27', fillColor: '#2D5A27', fillOpacity: 0.1 }).addTo(mapa);
 });
 
-L.control.watermark = function(opts) {
-    return new L.Control.Watermark({opts});
+mapa.on('locationerror', function() {
+    console.log("Error de geolocalización");
+});
+
+// El botón nativo de geolocalización ha sido removido porque ya contamos con el botón flotante premium en el HTML.
+
+// Marca de agua
+L.control.watermark = function() {
+    return new (L.Control.extend({
+        onAdd: function() {
+            var img = L.DomUtil.create('img');
+            img.src = staticUrls.milestoneIcon;
+            img.style.width = '40px';
+            img.style.opacity = '0.7';
+            return img;
+        }
+    }))();
+};
+L.control.watermark({ position: 'bottomleft' }).addTo(mapa);
+
+// ===== FILTROS Y BÚSQUEDA =====
+var layerMap = {
+    turismo: turismo,
+    alojamientos: alojamientos,
+    gastronomia: gastronomia,
+    aventura: aventura,
+    servicios: servicios,
+    tiendas: tiendas,
+    contacto: contacto
+};
+
+function toggleAllLayers(btn) {
+    // Activar todas las capas
+    document.querySelectorAll('.chip-filter').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    Object.values(layerMap).forEach(layer => {
+        if (!mapa.hasLayer(layer)) mapa.addLayer(layer);
+    });
 }
-L.control.watermark().addTo(mapa);
+
+function toggleSingleLayer(btn, layerName) {
+    // Desactivar "Todos"
+    document.querySelector('.chip-filter[data-layer="all"]').classList.remove('active');
+
+    btn.classList.toggle('active');
+
+    var layer = layerMap[layerName];
+    if (!layer) return;
+
+    if (btn.classList.contains('active')) {
+        if (!mapa.hasLayer(layer)) mapa.addLayer(layer);
+    } else {
+        if (mapa.hasLayer(layer)) mapa.removeLayer(layer);
+    }
+
+    // Si ninguno activo, reactivar todos
+    var anyActive = document.querySelectorAll('.chip-filter.active:not([data-layer="all"])');
+    if (anyActive.length === 0) {
+        document.querySelector('.chip-filter[data-layer="all"]').classList.add('active');
+        Object.values(layerMap).forEach(l => { if (!mapa.hasLayer(l)) mapa.addLayer(l); });
+    }
+}
+
+// Búsqueda de marcadores
+document.getElementById('map-search-input').addEventListener('input', function(e) {
+    var query = e.target.value.toLowerCase().trim();
+    if (query.length < 2) return;
+
+    // Buscar en todos los layers
+    var found = false;
+    Object.values(layerMap).forEach(function(group) {
+        group.eachLayer(function(marker) {
+            if (marker.getPopup) {
+                var popup = marker.getPopup();
+                if (popup) {
+                    var content = popup.getContent().toLowerCase();
+                    if (content.includes(query) && !found) {
+                        mapa.flyTo(marker.getLatLng(), 17);
+                        marker.openPopup();
+                        found = true;
+                    }
+                }
+            }
+        });
+    });
+});
+
+// Mi Ubicación botón flotante
+document.getElementById('locate-btn').addEventListener('click', function() {
+    if ("geolocation" in navigator) {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        var self = this;
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            userLocation = L.latLng(lat, lng);
+            
+            if (window.userMarker) {
+                window.userMarker.setLatLng([lat, lng]);
+            } else {
+                window.userMarker = L.marker([lat, lng], {icon: geoIcon}).addTo(mapa)
+                    .bindPopup("<div class='text-center fw-bold'>Estás aquí</div>");
+            }
+            mapa.flyTo([lat, lng], 16);
+            self.innerHTML = '<i class="fas fa-crosshairs"></i>';
+        }, function(error) {
+            alert("No se pudo obtener tu ubicación. Activa el GPS.");
+            self.innerHTML = '<i class="fas fa-crosshairs"></i>';
+        }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+    } else {
+        alert("Tu navegador no soporta geolocalización.");
+    }
+});
+
+// ===== CONTROL DE CAPA BASE (ESTÁNDAR / SATÉLITE) =====
+document.getElementById('btn-map-standard').addEventListener('click', function() {
+    if (!mapa.hasLayer(osm)) {
+        mapa.addLayer(osm);
+    }
+    if (mapa.hasLayer(esriWorldImagery)) {
+        mapa.removeLayer(esriWorldImagery);
+    }
+    this.classList.add('active');
+    document.getElementById('btn-map-satellite').classList.remove('active');
+});
+
+document.getElementById('btn-map-satellite').addEventListener('click', function() {
+    if (!mapa.hasLayer(esriWorldImagery)) {
+        mapa.addLayer(esriWorldImagery);
+    }
+    if (mapa.hasLayer(osm)) {
+        mapa.removeLayer(osm);
+    }
+    this.classList.add('active');
+    document.getElementById('btn-map-standard').classList.remove('active');
+});

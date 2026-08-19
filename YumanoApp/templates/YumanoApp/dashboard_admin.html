@@ -1,0 +1,664 @@
+{% extends "YumanoApp/base_modern.html" %}
+{% load static %}
+
+{% block title %}YÚMANO | Centro de Control{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard_admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="sidebar-admin" id="sidebar">
+        <div>
+            <!-- Header sidebar móvil (Cerrar menú hamburguesa) -->
+            <div class="d-flex justify-content-between align-items-center mb-4 d-lg-none">
+                <span class="fw-bold text-success small tracking-widest uppercase">Centro Control</span>
+                <button class="modal-btn-close fs-3" onclick="toggleSidebar()">&times;</button>
+            </div>
+
+            <div class="sidebar-brand">
+                <h3>YÚMANO</h3>
+                <p>Centro de Control</p>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a class="sidebar-link active" data-target="pane-general" onclick="closeSidebarOnMobile()">
+                        <i class="fas fa-th-large"></i>
+                        <span>Panel General</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" data-target="pane-sectores" onclick="closeSidebarOnMobile()">
+                        <i class="fas fa-cubes"></i>
+                        <span>Gestión Sectores</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" data-target="pane-admins" onclick="closeSidebarOnMobile()">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Administradores</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" data-target="pane-actividad" onclick="closeSidebarOnMobile()">
+                        <i class="fas fa-history"></i>
+                        <span>Actividad</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" data-target="pane-config" onclick="closeSidebarOnMobile()">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Botón de descargar reporte consolidado en CSV -->
+            <button class="btn-new-report" onclick="downloadConsolidatedReport()">
+                <i class="fas fa-file-download"></i>
+                <span>Nuevo Reporte</span>
+            </button>
+        </div>
+
+        <div class="sidebar-footer">
+            <a class="sidebar-link" href="#" onclick="showToast('Centro de ayuda en línea próximamente disponible')">
+                <i class="fas fa-question-circle"></i>
+                <span>Ayuda</span>
+            </a>
+            <a class="sidebar-link" href="{% url 'logout' %}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="content-admin">
+        <!-- HEADER -->
+        <header class="header-admin">
+            <div class="header-title">
+                <h1>Ecosistema YÚMANO</h1>
+            </div>
+
+            <div class="header-actions">
+                <!-- Conmutador de Modo Oscuro -->
+                <button class="btn-notification" id="btn-theme-toggle" title="Alternar Modo Oscuro" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-toggle-icon"></i>
+                </button>
+
+                <!-- Botón de notificaciones estándar -->
+                <button class="btn-notification" title="Notificaciones" onclick="showToast('Sin alertas críticas adicionales por el momento')">
+                    <i class="fas fa-bell"></i>
+                    <span class="btn-notification-badge"></span>
+                </button>
+
+                <!-- Botón hamburguesa móvil -->
+                <button class="btn-notification d-lg-none" id="sidebar-toggle-btn" title="Menú Principal" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="user-profile-widget d-none d-sm-flex">
+                    <img src="{% static 'images/iconos/Icono.png' %}" alt="Admin Avatar" class="user-profile-img" onerror="this.src='https://ui-avatars.com/api/?name=Admin+YUMANO&background=061b0e&color=fff'">
+                    <div class="user-profile-info d-none d-md-block">
+                        <div class="user-profile-name">Admin Principal</div>
+                        <div class="user-profile-role">Supervisor Global</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PANEL GENERAL -->
+        <section id="pane-general" class="dashboard-pane active">
+            <!-- SALUD DEL ECOSISTEMA (Valores adaptados a Pesos Colombianos) -->
+            <div class="ecosystem-stats-title">
+                <span>Salud del Ecosistema</span>
+                <span class="ecosystem-update-time"><i class="fas fa-sync-alt me-1"></i> Última actualización: Hace 5 minutos</span>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <!-- Tarjeta Hoteles -->
+                <div class="col-md-6 col-lg-4 col-xl" style="min-width: 190px;">
+                    <div class="stat-card-heritage">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <span class="stat-card-trend trend-up">+12% <i class="fas fa-arrow-up small"></i></span>
+                        </div>
+                        <div class="stat-card-val">$45.2M COP</div>
+                        <div class="stat-card-desc">Hoteles</div>
+                        <div class="d-flex align-items-center justify-content-between mt-2">
+                            <span class="text-secondary small fw-bold" id="hotels-count">{{ dashboard_data.alojamientos_totales }} Activos</span>
+                            <!-- Sparkline Lineal Simple SVG -->
+                            <svg class="sparkline" width="60" height="20" viewBox="0 0 60 20">
+                                <path d="M0,15 L12,12 L24,14 L36,8 L48,11 L60,3" fill="none" stroke="#2D5A27" stroke-width="2" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Gastronomía -->
+                <div class="col-md-6 col-lg-4 col-xl" style="min-width: 190px;">
+                    <div class="stat-card-heritage">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <span class="stat-card-trend trend-up">+6% <i class="fas fa-arrow-up small"></i></span>
+                        </div>
+                        <div class="stat-card-val">$28.9M COP</div>
+                        <div class="stat-card-desc">Gastronomía</div>
+                        <div class="d-flex align-items-center justify-content-between mt-2">
+                            <span class="text-secondary small fw-bold">{{ dashboard_data.gastronomias_totales }} Activos</span>
+                            <svg class="sparkline" width="60" height="20" viewBox="0 0 60 20">
+                                <path d="M0,16 L12,18 L24,12 L36,15 L48,6 L60,2" fill="none" stroke="#2D5A27" stroke-width="2" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Tiendas -->
+                <div class="col-md-6 col-lg-4 col-xl" style="min-width: 190px;">
+                    <div class="stat-card-heritage">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <span class="stat-card-trend trend-down">-2% <i class="fas fa-arrow-down small"></i></span>
+                        </div>
+                        <div class="stat-card-val">$12.4M COP</div>
+                        <div class="stat-card-desc">Tiendas</div>
+                        <div class="d-flex align-items-center justify-content-between mt-2">
+                            <span class="text-secondary small fw-bold">{{ dashboard_data.productos_totales }} Activos</span>
+                            <svg class="sparkline" width="60" height="20" viewBox="0 0 60 20">
+                                <path d="M0,4 L12,8 L24,5 L36,12 L48,10 L60,16" fill="none" stroke="#ba1a1a" stroke-width="2" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Experiencias -->
+                <div class="col-md-6 col-lg-4 col-xl" style="min-width: 190px;">
+                    <div class="stat-card-heritage">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">
+                                <i class="fas fa-hiking"></i>
+                            </div>
+                            <span class="stat-card-trend trend-up">+15% <i class="fas fa-arrow-up small"></i></span>
+                        </div>
+                        <div class="stat-card-val">$19.7M COP</div>
+                        <div class="stat-card-desc">Experiencias</div>
+                        <div class="d-flex align-items-center justify-content-between mt-2">
+                            <span class="text-secondary small fw-bold">{{ dashboard_data.experiencias_totales }} Activos</span>
+                            <svg class="sparkline" width="60" height="20" viewBox="0 0 60 20">
+                                <path d="M0,15 L12,16 L24,10 L36,12 L48,5 L60,1" fill="none" stroke="#2D5A27" stroke-width="2" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Servicios -->
+                <div class="col-md-6 col-lg-4 col-xl" style="min-width: 190px;">
+                    <div class="stat-card-heritage">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">
+                                <i class="fas fa-concierge-bell"></i>
+                            </div>
+                            <span class="stat-card-trend trend-neutral">Est. —</span>
+                        </div>
+                        <div class="stat-card-val">$4.1M COP</div>
+                        <div class="stat-card-desc">Servicios</div>
+                        <div class="d-flex align-items-center justify-content-between mt-2">
+                            <span class="text-secondary small fw-bold">{{ dashboard_data.servicios_totales }} Activos</span>
+                            <svg class="sparkline" width="60" height="20" viewBox="0 0 60 20">
+                                <path d="M0,10 L15,10 L30,10 L45,10 L60,10" fill="none" stroke="#737973" stroke-width="2" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ALERTAS Y ACTIVIDAD RECIENTE -->
+            <div class="row g-4 mb-4">
+                <!-- COLUMNA ALERTAS -->
+                <div class="col-lg-7">
+                    <div class="glass-card-premium h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="chart-card-title">Alertas Críticas</h4>
+                            <a href="#" class="btn-view-all-activity" onclick="showToast('Historial completo cargado')">Ver Historial</a>
+                        </div>
+
+                        <!-- Contenedor Alertas -->
+                        <div id="alerts-container">
+                            <!-- Alerta 1 -->
+                            <div class="alert-card-heritage" id="alert-1">
+                                <div class="alert-card-icon text-danger">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div class="alert-card-content">
+                                    <div class="alert-card-header-row">
+                                        <h5 class="alert-card-title">Error de Conectividad: Terminal T-402</h5>
+                                        <span class="alert-card-time">Hace 3 min</span>
+                                    </div>
+                                    <p class="alert-card-body">
+                                        El terminal de pagos en "Hotel Plaza Antigua" no responde. Se requiere reinicio manual del servidor de sector.
+                                    </p>
+                                    <button class="btn-alert-action" onclick="resolveAlert('alert-1', 'Conectividad Terminal T-402 solucionada')">Resolver</button>
+                                </div>
+                            </div>
+
+                            <!-- Alerta 2 -->
+                            <div class="alert-card-heritage alert-card-warning" id="alert-2">
+                                <div class="alert-card-icon text-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="alert-card-content">
+                                    <div class="alert-card-header-row">
+                                        <h5 class="alert-card-title">Stock Crítico: Artesanías Tradicionales</h5>
+                                        <span class="alert-card-time">Hace 15 min</span>
+                                    </div>
+                                    <p class="alert-card-body">
+                                        La tienda principal reporta menos de 5 unidades de "Cántaro de Arcilla Cocida". Sugerido reabastecimiento antes del fin de semana.
+                                    </p>
+                                    <button class="btn-alert-action btn-alert-secondary" onclick="showToast('Notificación enviada al artesano local')">Notificar</button>
+                                </div>
+                            </div>
+
+                            <!-- Alerta 3 -->
+                            <div class="alert-card-heritage alert-card-info" id="alert-3">
+                                <div class="alert-card-icon text-success">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="alert-card-content">
+                                    <div class="alert-card-header-row">
+                                        <h5 class="alert-card-title">Actualización de Sistema Completada</h5>
+                                        <span class="alert-card-time">Hoy, 09:30</span>
+                                    </div>
+                                    <p class="alert-card-body">
+                                        El módulo de Experiencias se ha actualizado a la versión 2.4. Mejoras en la gestión de reservas grupales aplicadas.
+                                    </p>
+                                    <button class="btn-alert-action btn-alert-secondary" onclick="resolveAlert('alert-3', 'Notificación archivada')">Archivar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA ACTIVIDAD RECIENTE -->
+                <div class="col-lg-5">
+                    <div class="glass-card-premium h-100">
+                        <h4 class="chart-card-title mb-3">Actividad Reciente</h4>
+                        <input type="text" id="filter-activities-input" class="filter-events-input" placeholder="Filtrar eventos...">
+
+                        <div class="activity-feed-heritage" id="activity-feed">
+                            <!-- Evento 1 -->
+                            <div class="activity-item-heritage" data-text="vip reserva experiencia ruta cacao personas">
+                                <div class="activity-item-icon icon-vip">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="activity-item-details">
+                                    <div class="activity-item-title">Nueva Reserva VIP</div>
+                                    <div class="activity-item-desc">Experiencia "Ruta del Cacao" para <strong>4 personas</strong>.</div>
+                                    <div class="activity-item-time">14:22</div>
+                                </div>
+                            </div>
+
+                            <!-- Evento 2 -->
+                            <div class="activity-item-heritage" data-text="sincronizacion precios sector tiendas tarifas temporada">
+                                <div class="activity-item-icon icon-price">
+                                    <i class="fas fa-sync"></i>
+                                </div>
+                                <div class="activity-item-details">
+                                    <div class="activity-item-title">Sincronización de Precios</div>
+                                    <div class="activity-item-desc">Sector Tiendas actualizó tarifas de temporada.</div>
+                                    <div class="activity-item-time">13:05</div>
+                                </div>
+                            </div>
+
+                            <!-- Evento 3 -->
+                            <div class="activity-item-heritage" data-text="alta colaborador elena m guias montaña">
+                                <div class="activity-item-icon icon-user">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="activity-item-details">
+                                    <div class="activity-item-title">Alta de Colaborador</div>
+                                    <div class="activity-item-desc">Elena M. asignada a Guías de Montaña.</div>
+                                    <div class="activity-item-time">11:46</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn-view-all-activity" onclick="showToast('Cargando flujo histórico de logs completo')">
+                            <span>Ver Toda la Actividad</span>
+                            <i class="fas fa-chevron-right small"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRÁFICO DINÁMICO DE INGRESOS (Valores adaptados a Pesos Colombianos $) -->
+            <div class="glass-card-premium mb-4">
+                <div class="chart-card-header">
+                    <h4 class="chart-card-title">Ingresos por Sector (Trimestral)</h4>
+                    <div class="chart-btn-group">
+                        <button class="btn-chart-toggle active" id="btn-chart-bar">Barras</button>
+                        <button class="btn-chart-toggle" id="btn-chart-line">Líneas</button>
+                    </div>
+                </div>
+
+                <div class="chart-display-container">
+                    <!-- SVG Chart Barras -->
+                    <svg id="chart-bars" class="chart-svg" viewBox="0 0 800 220">
+                        <!-- Grid Lines -->
+                        <line x1="50" y1="30" x2="750" y2="30" stroke="#e5e2dd" stroke-dasharray="5 5"></line>
+                        <line x1="50" y1="80" x2="750" y2="80" stroke="#e5e2dd" stroke-dasharray="5 5"></line>
+                        <line x1="50" y1="130" x2="750" y2="130" stroke="#e5e2dd" stroke-dasharray="5 5"></line>
+                        <line x1="50" y1="180" x2="750" y2="180" stroke="#e5e2dd"></line>
+
+                        <!-- Bars -->
+                        <!-- Hoteles -->
+                        <rect x="110" y="50" width="50" height="130" rx="4" fill="#061b0e"></rect>
+                        <!-- Gastro -->
+                        <rect x="250" y="80" width="50" height="100" rx="4" fill="#a0402a"></rect>
+                        <!-- Tiendas -->
+                        <rect x="390" y="120" width="50" height="60" rx="4" fill="#b68968"></rect>
+                        <!-- Experiencias -->
+                        <rect x="530" y="90" width="50" height="90" rx="4" fill="#4d6453"></rect>
+                        <!-- Servicios -->
+                        <rect x="670" y="140" width="50" height="40" rx="4" fill="#737973"></rect>
+
+                        <!-- Labels Y -->
+                        <text x="35" y="35" fill="#737973" font-size="10" text-anchor="end">$50M</text>
+                        <text x="35" y="85" fill="#737973" font-size="10" text-anchor="end">$30M</text>
+                        <text x="35" y="135" fill="#737973" font-size="10" text-anchor="end">$15M</text>
+                        <text x="35" y="185" fill="#737973" font-size="10" text-anchor="end">0</text>
+
+                        <!-- Labels X -->
+                        <text x="135" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Hoteles</text>
+                        <text x="275" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Gastro</text>
+                        <text x="415" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Tiendas</text>
+                        <text x="555" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Experiencias</text>
+                        <text x="695" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Servicios</text>
+                    </svg>
+
+                    <!-- SVG Chart Líneas -->
+                    <svg id="chart-lines" class="chart-svg chart-hidden" viewBox="0 0 800 220">
+                        <!-- Grid Lines -->
+                        <line x1="50" y1="30" x2="750" y2="30" stroke="#e5e2dd" stroke-dasharray="5 5"></line>
+                        <line x1="50" y1="80" x2="750" y2="80" stroke="#e5e2dd" stroke-dasharray="5 5"></line>
+                        <line x1="50" y1="130" x2="750" y2="130" stroke="#e5e2dd" stroke-dasharray="5 5"></line>
+                        <line x1="50" y1="180" x2="750" y2="180" stroke="#e5e2dd"></line>
+
+                        <!-- Curved Path -->
+                        <path d="M135,50 Q205,70 275,80 T415,120 T555,90 T695,140" fill="none" stroke="#a0402a" stroke-width="4" stroke-linecap="round"></path>
+
+                        <!-- Dots on Path -->
+                        <circle cx="135" cy="50" r="6" fill="#061b0e" stroke="#ffffff" stroke-width="2"></circle>
+                        <circle cx="275" cy="80" r="6" fill="#061b0e" stroke="#ffffff" stroke-width="2"></circle>
+                        <circle cx="415" cy="120" r="6" fill="#061b0e" stroke="#ffffff" stroke-width="2"></circle>
+                        <circle cx="555" cy="90" r="6" fill="#061b0e" stroke="#ffffff" stroke-width="2"></circle>
+                        <circle cx="695" cy="140" r="6" fill="#061b0e" stroke="#ffffff" stroke-width="2"></circle>
+
+                        <!-- Labels Y -->
+                        <text x="35" y="35" fill="#737973" font-size="10" text-anchor="end">$50M</text>
+                        <text x="35" y="85" fill="#737973" font-size="10" text-anchor="end">$30M</text>
+                        <text x="35" y="135" fill="#737973" font-size="10" text-anchor="end">$15M</text>
+                        <text x="35" y="185" fill="#737973" font-size="10" text-anchor="end">0</text>
+
+                        <!-- Labels X -->
+                        <text x="135" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Hoteles</text>
+                        <text x="275" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Gastro</text>
+                        <text x="415" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Tiendas</text>
+                        <text x="555" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Experiencias</text>
+                        <text x="695" y="205" fill="#434843" font-size="12" font-weight="600" text-anchor="middle">Servicios</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA: GESTIÓN DE ADMINISTRADORES -->
+        <section id="pane-admins" class="dashboard-pane">
+            <div class="section-table-header">
+                <h4 class="section-table-title">Gestión de Administradores</h4>
+                <button class="btn-add-admin" onclick="openAdminModal()">
+                    <i class="fas fa-plus"></i> Añadir Admin
+                </button>
+            </div>
+
+            <div class="table-container-heritage">
+                <table class="table-heritage">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Sector</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admins-table-body">
+                        <!-- JS inyectará filas aquí -->
+                    </tbody>
+                </table>
+
+                <div class="table-pagination-row">
+                    <span id="pagination-status-text">Mostrando 3 de 3 administradores</span>
+                    <div class="pagination-btn-group">
+                        <button class="btn-page-number active">1</button>
+                        <button class="btn-page-number" onclick="showToast('Página 2 vacía por ahora')">2</button>
+                        <button class="btn-page-number" onclick="showToast('Página 3 vacía por ahora')">3</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA: GESTIÓN SECTORES -->
+        <section id="pane-sectores" class="dashboard-pane">
+            <h4 class="section-table-title mb-4">Gestión de Sectores del Ecosistema</h4>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card-premium">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="stat-card-icon"><i class="fas fa-hotel"></i></div>
+                            <h5 class="fw-bold mb-0">Hoteles y Alojamientos</h5>
+                        </div>
+                        <p class="text-secondary small">Gestión total de hospedajes, cabañas y campamentos registrados en San Agustín.</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <span class="badge-sector-heritage" style="background:#D0E9D4; color:#0B2013;">{{ dashboard_data.alojamientos_totales }} Registrados</span>
+                            <a href="{% url 'admin:alojamientos_alojamiento_changelist' %}" target="_blank" class="btn btn-alert-action btn-alert-secondary py-1 px-3">Administrar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card-premium">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="stat-card-icon"><i class="fas fa-utensils"></i></div>
+                            <h5 class="fw-bold mb-0">Gastronomía Local</h5>
+                        </div>
+                        <p class="text-secondary small">Supervisión de restaurantes, cafés y locales de comida con platos autóctonos de la región.</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <span class="badge-sector-heritage" style="background:#FFDAD2; color:#802915;">{{ dashboard_data.gastronomias_totales }} Registrados</span>
+                            <a href="{% url 'admin:gastronomia_gastronomia_changelist' %}" target="_blank" class="btn btn-alert-action btn-alert-secondary py-1 px-3">Administrar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card-premium">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="stat-card-icon"><i class="fas fa-store"></i></div>
+                            <h5 class="fw-bold mb-0">Artesanías y Tiendas</h5>
+                        </div>
+                        <p class="text-secondary small">Control de tiendas de suvenires, artesanías en arcilla, y productos de café especial.</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <span class="badge-sector-heritage" style="background:#FFDCC4; color:#613F24;">{{ dashboard_data.productos_totales }} Productos</span>
+                            <a href="{% url 'admin:tienda_producto_changelist' %}" target="_blank" class="btn btn-alert-action btn-alert-secondary py-1 px-3">Administrar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card-premium">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="stat-card-icon"><i class="fas fa-hiking"></i></div>
+                            <h5 class="fw-bold mb-0">Experiencias y Aventura</h5>
+                        </div>
+                        <p class="text-secondary small">Gestión de cabalgatas, senderos ecológicos, visitas guiadas y rutas arqueológicas.</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <span class="badge-sector-heritage" style="background:#d0e9d4; color:#0b2013;">{{ dashboard_data.experiencias_totales }} Activas</span>
+                            <a href="{% url 'admin:experiencias_experiencia_changelist' %}" target="_blank" class="btn btn-alert-action btn-alert-secondary py-1 px-3">Administrar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card-premium">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="stat-card-icon"><i class="fas fa-users"></i></div>
+                            <h5 class="fw-bold mb-0">Usuarios Globales</h5>
+                        </div>
+                        <p class="text-secondary small">Administración y control de cuentas de turistas, anfitriones, vendedores y guías.</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <span class="badge-sector-heritage" style="background:#f0ede8; color:#061b0e;">{{ dashboard_data.usuarios_totales }} Cuentas</span>
+                            <a href="{% url 'admin:YumanoApp_usuario_changelist' %}" target="_blank" class="btn btn-alert-action btn-alert-secondary py-1 px-3">Administrar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA: ACTIVIDAD -->
+        <section id="pane-actividad" class="dashboard-pane">
+            <h4 class="section-table-title mb-4">Registro Histórico de Logs</h4>
+            <div class="glass-card-premium">
+                <div class="table-container-heritage">
+                    <table class="table-heritage">
+                        <thead>
+                            <tr>
+                                <th>Fecha/Hora</th>
+                                <th>Tipo</th>
+                                <th>Usuario</th>
+                                <th>Acción Realizada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-secondary small">Hoy, 14:22</td>
+                                <td><span class="badge-sector-heritage" style="background:#D0E9D4; color:#0B2013;">Transacción</span></td>
+                                <td><strong>Faiver Bravo</strong></td>
+                                <td>Reserva confirmada en Glamping Nido Ancestral.</td>
+                            </tr>
+                            <tr>
+                                <td class="text-secondary small">Hoy, 13:05</td>
+                                <td><span class="badge-sector-heritage" style="background:#FFDCC4; color:#613F24;">Actualización</span></td>
+                                <td><strong>Artesanías Agustín</strong></td>
+                                <td>Actualizó stock de Cántaros de Arcilla.</td>
+                            </tr>
+                            <tr>
+                                <td class="text-secondary small">Hoy, 11:46</td>
+                                <td><span class="badge-sector-heritage" style="background:#FFDAD2; color:#802915;">Sistema</span></td>
+                                <td><strong>Administrador</strong></td>
+                                <td>Nuevo colaborador registrado en la base de datos.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA: CONFIGURACIÓN -->
+        <section id="pane-config" class="dashboard-pane">
+            <h4 class="section-table-title mb-4">Configuración del Sistema</h4>
+            <div class="glass-card-premium" style="max-width: 600px;">
+                <form onsubmit="event.preventDefault(); showToast('Configuración del ecosistema guardada');">
+                    <div class="form-group-heritage">
+                        <label for="conf-title">Nombre del Ecosistema</label>
+                        <input type="text" id="conf-title" class="form-control-heritage" value="YÚMANO - Red ancestral, guía digital">
+                    </div>
+                    <div class="form-group-heritage">
+                        <label for="conf-email">Email de Soporte Global</label>
+                        <input type="email" id="conf-email" class="form-control-heritage" value="soporte@yumano.com">
+                    </div>
+                    <div class="form-group-heritage">
+                        <label for="conf-maintenance">Modo de Mantenimiento</label>
+                        <select id="conf-maintenance" class="form-control-heritage">
+                            <option value="off" selected>Desactivado (En producción)</option>
+                            <option value="on">Activado (Acceso restringido)</option>
+                        </select>
+                    </div>
+                    <button class="btn-add-admin mt-3" type="submit">Guardar Cambios</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- FOOTER MOCK DE CONTROL -->
+        <footer class="mt-5 text-center text-secondary small py-4 border-top" style="font-family:'Hanken Grotesk'; font-size:0.82rem;">
+            © 2026 YÚMANO - Red ancestral, guía digital. Comprometidos con el Patrimonio y la Innovación.
+        </footer>
+    </main>
+</div>
+
+<!-- MODAL PARA AÑADIR/EDITAR ADMINISTRADORES -->
+<div class="modal-backdrop-heritage" id="admin-modal">
+    <div class="modal-dialog-heritage animate-fade-in">
+        <div class="modal-header-heritage">
+            <h5 id="modal-title">Añadir Administrador</h5>
+            <button class="modal-btn-close" onclick="closeAdminModal()">&times;</button>
+        </div>
+        <div class="modal-body-heritage">
+            <input type="hidden" id="admin-id">
+            
+            <div class="form-group-heritage">
+                <label for="admin-name">Nombre Completo</label>
+                <input type="text" id="admin-name" class="form-control-heritage" placeholder="Ej. Ricardo Valdivia" required>
+            </div>
+            
+            <div class="form-group-heritage">
+                <label for="admin-email">Correo Electrónico</label>
+                <input type="email" id="admin-email" class="form-control-heritage" placeholder="Ej. r.valdivia@yumano.com" required>
+            </div>
+            
+            <div class="form-group-heritage">
+                <label for="admin-sector">Sector Asignado</label>
+                <select id="admin-sector" class="form-control-heritage">
+                    <option value="Hoteles">Hoteles</option>
+                    <option value="Gastronomía">Gastronomía</option>
+                    <option value="Tiendas">Tiendas</option>
+                    <option value="Experiencias">Experiencias</option>
+                    <option value="Servicios">Servicios</option>
+                </select>
+            </div>
+
+            <div class="form-group-heritage">
+                <label for="admin-role">Rol del Administrador</label>
+                <input type="text" id="admin-role" class="form-control-heritage" placeholder="Ej. Gestor Senior" required>
+            </div>
+
+            <div class="form-group-heritage">
+                <label for="admin-status">Estado inicial</label>
+                <select id="admin-status" class="form-control-heritage">
+                    <option value="Conectado">Conectado</option>
+                    <option value="Ausente">Ausente</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer-heritage">
+            <button class="btn-alert-action btn-alert-secondary" onclick="closeAdminModal()">Cancelar</button>
+            <button class="btn-alert-action" onclick="saveAdmin()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOASTS FLOATING CONTAINER -->
+<div class="toast-container-heritage" id="toast-container"></div>
+
+<!-- LÓGICA E INTERACTIVIDAD JS -->
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard_admin.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,255 @@
+/* ==========================================================================
+   YÚMANO - Home & Hero Section Styles
+   ========================================================================== */
+
+/* Hero Section */
+.hero-section {
+    height: 75vh;
+    min-height: 400px;
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('../images/inicio/home_slider.jpg') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    margin-bottom: -40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55));
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+/* Staggered entry animations */
+.animate-stagger-1 {
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.2s;
+}
+.animate-stagger-2 {
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.45s;
+}
+.animate-stagger-3 {
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.7s;
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 1.2s;
+}
+.scroll-indicator-icon {
+    display: inline-block;
+    color: white;
+    font-size: 1.6rem;
+    opacity: 0.75;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    animation: bounce 2s infinite;
+}
+.scroll-indicator-icon:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+    60% { transform: translateY(-4px); }
+}
+
+.hero-content h1 {
+    font-size: clamp(2.2rem, 7vw, 4.5rem);
+    text-transform: uppercase;
+    letter-spacing: clamp(2px, 1vw, 6px);
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 12px rgba(0,0,0,0.6);
+    color: #ffffff !important;
+    font-weight: 800;
+}
+
+.hero-content p {
+    font-size: clamp(1rem, 3.5vw, 1.5rem);
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.5);
+    margin-bottom: 30px;
+}
+
+/* Category Cards */
+.category-card {
+    border: none;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    height: 280px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.category-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    color: #ffffff !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 50%;
+}
+
+.category-overlay h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #ffffff !important;
+}
+
+.category-overlay p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    color: #ffffff !important;
+}
+
+.category-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.category-card:hover img {
+    transform: scale(1.08);
+}
+
+/* Popular Destinations */
+.dest-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.dest-card:hover {
+    box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    transform: translateY(-3px);
+}
+
+.dest-img {
+    height: 190px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 18px !important;
+}
+
+.section-padding {
+    padding: 80px 0;
+}
+
+/* Mobile Responsive Optimizations */
+@media (max-width: 767.98px) {
+    .hero-section {
+        height: 48vh;
+        border-bottom-left-radius: 28px;
+        border-bottom-right-radius: 28px;
+        margin-bottom: -28px;
+    }
+
+    /* Horizontal Carousel on Mobile */
+    .mobile-scroll-row {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        padding: 10px 16px 24px !important;
+        margin: 0 -16px !important;
+        gap: 16px;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .mobile-scroll-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-scroll-row > div {
+        flex: 0 0 240px !important;
+        max-width: 240px !important;
+        scroll-snap-align: center;
+        margin: 0 !important;
+    }
+
+    .category-card {
+        height: 230px;
+        border-radius: 20px;
+    }
+
+    .section-padding {
+        padding: 45px 0 !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hero-content .d-flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px !important;
+        padding: 0 24px;
+    }
+
+    .hero-content .d-flex .btn {
+        width: 100%;
+        padding: 10px 24px !important;
+        font-size: 0.95rem !important;
+        border-radius: 50px !important;
+    }
+}

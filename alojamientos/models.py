@@ -1,5 +1,5 @@
 from django.db import models
-from WakaTurApp.models import Usuario
+from YumanoApp.models import Usuario
 
 # Modelo Categorías
 class Categoria(models.Model):
@@ -25,8 +25,9 @@ class Alojamiento(models.Model):
     horario = models.CharField(max_length=100)
     disponibilidad = models.BooleanField(default=True)
     habitaciones_disponibles = models.IntegerField(default=0)
-    imagen_principal = models.ImageField(upload_to='alojamientos/', blank=True, null=True)
-    imagen = models.ImageField(upload_to='alojamientos/')
+   # imagen_principal = models.ImageField(upload_to='alojamientos/', blank=True, null=True)
+   # imagen = models.ImageField(upload_to='alojamientos/')
+    telefono = models.CharField(max_length=15, default='', help_text="Número de contacto (WhatsApp)")
     categorias = models.ManyToManyField(Categoria, related_name='alojamientos')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)  
@@ -51,20 +52,28 @@ class ImagenAlojamiento(models.Model):
     def __str__(self):
         return f"Imagen de {self.alojamiento.nombre}"
 
-# Modelo Post para Comentarios
+    def save(self, *args, **kwargs):
+        if self.es_principal:
+            # Desmarcar otras imágenes principales del mismo alojamiento
+            ImagenAlojamiento.objects.filter(alojamiento=self.alojamiento, es_principal=True).update(es_principal=False)
+        super().save(*args, **kwargs)
+
+# Modelo Post para Comentarios/Reseñas
 class Post(models.Model):
     alojamiento = models.ForeignKey(Alojamiento, on_delete=models.CASCADE, related_name='posts')
     autor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    descripcion = models.CharField(max_length=150)
+    descripcion = models.CharField(max_length=300)
+    calificacion = models.PositiveIntegerField(default=5, help_text="Calificación de 1 a 5 estrellas")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)  
 
     class Meta:
-        verbose_name = 'post'
-        verbose_name_plural = 'posts'
+        verbose_name = 'reseña'
+        verbose_name_plural = 'reseñas'
+        ordering = ['-created']
 
     def __str__(self):
-        return self.descripcion
+        return f"{self.autor.username} - {self.calificacion}★ - {self.descripcion[:50]}"
 
 
 class Reserva(models.Model):
@@ -91,4 +100,3 @@ class Reserva(models.Model):
     def dias_estadia(self):
         """Calcula el número de días de estadía."""
         return (self.fecha_fin - self.fecha_inicio).days
-    

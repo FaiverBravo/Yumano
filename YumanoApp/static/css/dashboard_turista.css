@@ -1,0 +1,298 @@
+:root {
+        --bg-heritage: #fcf9f4; /* Arena Cálida */
+        --card-bg-heritage: #ffffff;
+        --text-main: #061b0e; /* Verde Bosque Profundo */
+        --text-muted-heritage: #737973;
+        --border-heritage: #e5e2dd;
+        --primary-heritage: #061b0e;
+        --accent-heritage: #a0402a; /* Terracota */
+        --accent-hover: #833220;
+        --glass-bg: rgba(255, 255, 255, 0.65);
+        --glass-border: rgba(229, 226, 221, 0.6);
+        --header-gradient: linear-gradient(135deg, #061b0e 0%, #0d381e 100%);
+        --close-btn-filter: none;
+    }
+
+    [data-bs-theme="dark"] {
+        --bg-heritage: #0b0f0c;
+        --card-bg-heritage: #151b17;
+        --text-main: #f6f3ee;
+        --text-muted-heritage: #a2a8a2;
+        --border-heritage: #28302b;
+        --primary-heritage: #1b4d22;
+        --accent-heritage: #ff9d85;
+        --accent-hover: #ffb8a8;
+        --glass-bg: rgba(21, 27, 23, 0.7);
+        --glass-border: rgba(40, 48, 43, 0.5);
+        --header-gradient: linear-gradient(135deg, #151b17 0%, #1c2720 100%);
+        --close-btn-filter: invert(1) grayscale(1) brightness(2);
+    }
+
+    body {
+        background-color: var(--bg-heritage) !important;
+        color: var(--text-main) !important;
+        font-family: 'Hanken Grotesk', 'Outfit', 'Inter', sans-serif !important;
+    }
+
+    /* Premium Header Card */
+    .dashboard-header-premium {
+        background: var(--header-gradient);
+        border-radius: 20px;
+        padding: 35px;
+        color: #ffffff !important;
+        border: 1px solid var(--border-heritage);
+        box-shadow: 0 8px 30px rgba(6, 27, 14, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .dashboard-header-premium h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        font-family: 'Hanken Grotesk', 'Outfit', sans-serif;
+        letter-spacing: -0.5px;
+        color: #ffffff !important;
+    }
+
+    .dashboard-header-premium p {
+        color: rgba(255, 255, 255, 0.85) !important;
+        font-size: 1.05rem;
+    }
+
+    .dashboard-header-premium .text-muted {
+        color: rgba(255, 255, 255, 0.65) !important;
+    }
+
+    /* Stat Heritage Card */
+    .adventure-stat-heritage {
+        background: var(--glass-bg);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        flex: 1;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .adventure-stat-heritage:hover {
+        background: var(--card-bg-heritage);
+        border-color: var(--accent-heritage);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(6, 27, 14, 0.05);
+    }
+
+    .adventure-stat-heritage h3 {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
+        font-size: 2rem;
+    }
+
+    /* Glass Premium Card */
+    .glass-card-premium {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(6, 27, 14, 0.03);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-card-premium:hover {
+        border-color: var(--border-heritage);
+        box-shadow: 0 12px 40px rgba(6, 27, 14, 0.06);
+    }
+
+    /* Action Buttons (Menu side) */
+    .action-btn-heritage {
+        padding: 16px 20px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-decoration: none;
+        color: var(--text-main) !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01);
+    }
+
+    .action-btn-heritage:hover {
+        transform: translateX(8px);
+        border-color: var(--accent-heritage);
+        background: var(--card-bg-heritage);
+    }
+
+    .action-icon-heritage {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+    }
+
+    /* Generic buttons */
+    .btn-premium-action {
+        background-color: var(--accent-heritage) !important;
+        color: #ffffff !important;
+        font-weight: 600;
+        border: none;
+        border-radius: 30px;
+        padding: 10px 24px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-premium-action:hover {
+        background-color: var(--accent-hover) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(160, 64, 42, 0.2);
+    }
+
+    .btn-secondary-action {
+        background-color: var(--glass-bg) !important;
+        border: 1px solid var(--glass-border) !important;
+        color: var(--text-main) !important;
+        font-weight: 600;
+        border-radius: 30px;
+        padding: 10px 24px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary-action:hover {
+        background-color: var(--border-heritage) !important;
+        color: var(--text-main) !important;
+    }
+
+    /* Custom Heritage Modals */
+    .modal-content-heritage {
+        background: var(--card-bg-heritage) !important;
+        border: 1px solid var(--border-heritage) !important;
+        border-radius: 20px !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+        overflow: hidden;
+    }
+
+    .modal-header-heritage {
+        padding: 24px 30px 15px 30px !important;
+        border-bottom: none !important;
+        color: var(--text-main) !important;
+    }
+
+    .modal-header-heritage .modal-title {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
+        font-size: 1.35rem;
+    }
+
+    .modal-body-heritage {
+        padding: 10px 30px 24px 30px !important;
+    }
+
+    .modal-footer-heritage {
+        padding: 15px 30px 24px 30px !important;
+        border-top: none !important;
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+
+    .form-control-heritage {
+        background-color: var(--bg-heritage) !important;
+        border: 1px solid var(--border-heritage) !important;
+        color: var(--text-main) !important;
+        border-radius: 12px !important;
+        padding: 12px 18px !important;
+        transition: all 0.3s ease !important;
+        width: 100%;
+        display: block;
+    }
+
+    /* Fix para inputs de archivo */
+    input[type="file"].form-control-heritage {
+        padding: 8px 12px !important;
+        cursor: pointer;
+        line-height: 1.5;
+    }
+
+    .form-control-heritage:focus {
+        border-color: var(--accent-heritage) !important;
+        box-shadow: 0 0 0 3px rgba(160, 64, 42, 0.15) !important;
+        background-color: var(--card-bg-heritage) !important;
+    }
+
+    /* Mobile Responsive Optimizations */
+    @media (max-width: 767.98px) {
+        .dashboard-header-premium {
+            padding: 24px 20px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .dashboard-header-premium .d-flex {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 15px !important;
+        }
+
+        .dashboard-header-premium .btn-premium-action {
+            width: 100%;
+        }
+
+        .adventure-stat-heritage {
+            padding: 12px;
+            border-radius: 16px;
+        }
+
+        .glass-card-premium {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 15px !important;
+            padding: 20px !important;
+        }
+
+        .glass-card-premium .text-end {
+            text-align: left !important;
+            width: 100%;
+            border-top: 1px solid var(--border-heritage);
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .col-lg-4 .d-flex.flex-column.gap-3 {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px !important;
+        }
+
+        .action-btn-heritage {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 16px 10px !important;
+            gap: 8px !important;
+            font-size: 0.82rem;
+        }
+
+        .action-btn-heritage:hover {
+            transform: translateY(-3px) !important;
+        }
+
+        .action-icon-heritage {
+            width: 48px;
+            height: 48px;
+            font-size: 1.3rem;
+            border-radius: 12px;
+        }
+
+        .fav-btn {
+            min-height: 44px;
+            min-width: 44px;
+        }
+    }

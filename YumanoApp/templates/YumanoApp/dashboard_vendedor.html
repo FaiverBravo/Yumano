@@ -1,0 +1,366 @@
+{% extends "YumanoApp/base_modern.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | YÚMANO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard_vendedor.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="dashboard-header-premium mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="d-flex align-items-center gap-3 flex-wrap flex-md-nowrap">
+                    <div class="avatar-container overflow-hidden d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0; background: #f6f3ee; border: 2px solid #e5e2dd;">
+                        {% if user.foto_perfil %}
+                            <img src="{{ user.foto_perfil.url }}" alt="{{ user.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <span class="fw-bold fs-3 text-success">{{ user.nombre|first|upper }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h1 class="fw-bold mb-1" style="color: #ffffff !important;">{{ title }}</h1>
+                        <p class="mb-0">Hola, {{ user.nombre }} {{ user.apellido }}. Gestiona tus servicios y publicaciones desde aquí.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-flex justify-content-lg-end gap-3 mt-4 mt-lg-0 align-items-center">
+                <button type="button" class="btn btn-secondary-action border-white text-white" style="background: rgba(255, 255, 255, 0.15) !important;" data-bs-toggle="modal" data-bs-target="#editPerfilModal">
+                    <i class="fas fa-user-edit me-2"></i>Editar Perfil
+                </button>
+                <a href="{% url 'Mapa' %}" class="btn btn-secondary-action border-white text-white" style="background: rgba(255, 255, 255, 0.15) !important;">
+                    <i class="fas fa-map-marked-alt me-2"></i>Ver en Mapa
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Stats -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="stat-card-heritage">
+                <h2 class="mb-1 text-success">{{ items_count|default:"0" }}</h2>
+                <p class="text-secondary fw-semibold mb-0">Publicaciones Activas</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card-heritage">
+                <h2 class="mb-1 text-warning d-flex align-items-center justify-content-center gap-2">
+                    {{ calificacion_promedio|default:"0.0" }} <i class="fas fa-star fs-4"></i>
+                </h2>
+                <p class="text-secondary fw-semibold mb-0">Calificación Promedio</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card-heritage">
+                <h2 class="mb-1 text-info">{{ total_resenas|default:"0" }}</h2>
+                <p class="text-secondary fw-semibold mb-0">Reseñas Totales</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gestión -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="glass-card-premium p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h4 class="fw-bold mb-0">
+                        <i class="fas fa-box-open me-2 text-success"></i>
+                        {% if user.tipo_usuario == 'vendedor' %}Mis Productos{% else %}Mis Servicios{% endif %}
+                    </h4>
+                    <!-- Botón para abrir el Modal (o redirigir) -->
+                    <button type="button" class="btn btn-premium-action" data-bs-toggle="modal" data-bs-target="#subirModal">
+                        <i class="fas fa-plus me-1"></i> Añadir {% if user.tipo_usuario == 'vendedor' %}Producto{% else %}Servicio{% endif %}
+                    </button>
+                </div>
+
+                {% if items %}
+                <div class="table-responsive">
+                    <table class="table table-heritage align-middle">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td data-label="Imagen">
+                                    {% if item.imagen %}
+                                        <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" class="rounded shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Nombre" class="fw-bold">{{ item.nombre }}</td>
+                                <td data-label="Categoría">
+                                    <span class="badge bg-success-subtle text-success">
+                                        {% if item.categorias.nombre %}
+                                            {{ item.categorias.nombre }}
+                                        {% else %}
+                                            {{ user.get_tipo_usuario_display }}
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td data-label="Precio" class="fw-bold">${{ item.precio }}</td>
+                                <td data-label="Acciones">
+                                    <div class="form-check form-switch d-inline-block me-2" title="Activar/Desactivar Disponibilidad">
+                                        {% if user.tipo_usuario == 'vendedor' %}
+                                            <input class="form-check-input availability-toggle" type="checkbox" data-id="{{ item.id }}" data-tipo="producto" {% if item.disponibilidad %}checked{% endif %}>
+                                        {% elif user.tipo_usuario == 'restaurantero' %}
+                                            <!-- Gastronomia no tiene campo disponibilidad actualmente -->
+                                        {% elif user.tipo_usuario == 'proveedor_experiencias' %}
+                                            <input class="form-check-input availability-toggle" type="checkbox" data-id="{{ item.id }}" data-tipo="experiencia" {% if item.disponibilidad %}checked{% endif %}>
+                                        {% endif %}
+                                    </div>
+                                    {% if user.tipo_usuario == 'vendedor' %}
+                                        <a href="{% url 'editar_producto' item.id %}" class="btn btn-sm btn-outline-success border-0 rounded-circle me-1"><i class="fas fa-edit"></i></a>
+                                        <form action="{% url 'eliminar_producto' item.id %}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0 rounded-circle">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    {% elif user.tipo_usuario == 'restaurantero' %}
+                                        <a href="{% url 'editar_gastronomia' item.id %}" class="btn btn-sm btn-outline-success border-0 rounded-circle me-1"><i class="fas fa-edit"></i></a>
+                                        <form action="{% url 'eliminar_gastronomia' item.id %}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este plato?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0 rounded-circle">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    {% elif user.tipo_usuario == 'proveedor_experiencias' %}
+                                        <a href="{% url 'editar_experiencia' item.id %}" class="btn btn-sm btn-outline-success border-0 rounded-circle me-1"><i class="fas fa-edit"></i></a>
+                                        <form action="{% url 'eliminar_experiencia' item.id %}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar esta experiencia?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0 rounded-circle">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    {% elif user.tipo_usuario == 'proveedor_servicios' %}
+                                        <a href="{% url 'editar_servicio' item.id %}" class="btn btn-sm btn-outline-success border-0 rounded-circle me-1"><i class="fas fa-edit"></i></a>
+                                        <form action="{% url 'eliminar_servicio' item.id %}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este servicio?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0 rounded-circle">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-store-slash fa-3x text-muted mb-3 opacity-50"></i>
+                    <h5 class="text-secondary">Aún no tienes publicaciones</h5>
+                    <p class="text-muted">Empieza a añadir tus servicios para aparecer en el mapa y la plataforma.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Favoritos y Acciones Rápidas -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <!-- Mis Favoritos Guardados -->
+            <h4 class="fw-bold mb-4" id="favoritos-section">Mis Favoritos</h4>
+            {% if mis_favoritos %}
+                <div class="row g-3">
+                    {% for fav in mis_favoritos %}
+                        <div class="col-md-6 fav-item-card" id="fav-card-{{ fav.id }}">
+                            <div class="glass-card-premium p-3 d-flex gap-3 align-items-center h-100 position-relative">
+                                {% if fav.alojamiento %}
+                                    <div class="rounded-3 overflow-hidden" style="width: 60px; height: 60px; flex-shrink: 0;">
+                                        {% if fav.alojamiento.imagenes.first %}
+                                            <img src="{{ fav.alojamiento.imagenes.first.imagen.url }}" alt="{{ fav.alojamiento.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-success-subtle w-100 h-100 d-flex align-items-center justify-content-center text-success"><i class="fas fa-hotel"></i></div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-0 text-truncate"><a href="{% url 'alojamientos:alojamiento_detalle' fav.alojamiento.id %}" class="text-decoration-none text-reset">{{ fav.alojamiento.nombre }}</a></h6>
+                                        <small class="text-muted">Alojamiento</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 fav-btn" data-tipo="alojamiento" data-id="{{ fav.alojamiento.id }}"><i class="fas fa-heart text-danger"></i></button>
+                                {% elif fav.gastronomia %}
+                                    <div class="rounded-3 overflow-hidden" style="width: 60px; height: 60px; flex-shrink: 0;">
+                                        {% if fav.gastronomia.imagen %}
+                                            <img src="{{ fav.gastronomia.imagen.url }}" alt="{{ fav.gastronomia.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-danger-subtle w-100 h-100 d-flex align-items-center justify-content-center text-danger"><i class="fas fa-utensils"></i></div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-0 text-truncate"><a href="{% url 'gastronomia:gastronomia_detalle' fav.gastronomia.id %}" class="text-decoration-none text-reset">{{ fav.gastronomia.nombre }}</a></h6>
+                                        <small class="text-muted">Gastronomía</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 fav-btn" data-tipo="gastronomia" data-id="{{ fav.gastronomia.id }}"><i class="fas fa-heart text-danger"></i></button>
+                                {% elif fav.experiencia %}
+                                    <div class="rounded-3 overflow-hidden" style="width: 60px; height: 60px; flex-shrink: 0;">
+                                        {% if fav.experiencia.imagen %}
+                                            <img src="{{ fav.experiencia.imagen.url }}" alt="{{ fav.experiencia.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-warning-subtle w-100 h-100 d-flex align-items-center justify-content-center text-warning"><i class="fas fa-hiking"></i></div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-0 text-truncate"><a href="{% url 'experiencias:experiencia_detalle' fav.experiencia.id %}" class="text-decoration-none text-reset">{{ fav.experiencia.nombre }}</a></h6>
+                                        <small class="text-muted">Experiencia</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 fav-btn" data-tipo="experiencia" data-id="{{ fav.experiencia.id }}"><i class="fas fa-heart text-danger"></i></button>
+                                {% elif fav.producto %}
+                                    <div class="rounded-3 overflow-hidden" style="width: 60px; height: 60px; flex-shrink: 0;">
+                                        {% if fav.producto.imagen %}
+                                            <img src="{{ fav.producto.imagen.url }}" alt="{{ fav.producto.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-primary-subtle w-100 h-100 d-flex align-items-center justify-content-center text-primary"><i class="fas fa-store"></i></div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-0 text-truncate"><a href="{% url 'tienda:producto_detalle' fav.producto.id %}" class="text-decoration-none text-reset">{{ fav.producto.nombre }}</a></h6>
+                                        <small class="text-muted">Tienda</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 fav-btn" data-tipo="producto" data-id="{{ fav.producto.id }}"><i class="fas fa-heart text-danger"></i></button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="glass-card-premium text-center py-4 mb-4">
+                    <i class="far fa-heart fa-2x text-secondary opacity-25 mb-2"></i>
+                    <h6>Aún no tienes favoritos</h6>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Acciones Rápidas -->
+            <h4 class="fw-bold mb-4">Acciones Rápidas</h4>
+            <div class="d-flex flex-column gap-3">
+                <button type="button" class="action-btn-heritage w-100" data-bs-toggle="modal" data-bs-target="#subirModal">
+                    <div class="action-icon-heritage bg-primary-subtle text-primary">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <span class="fw-bold">Nuevo {% if user.tipo_usuario == 'vendedor' %}Producto{% else %}Servicio{% endif %}</span>
+                </button>
+                <a href="{% url 'alojamientos:Alojamientos' %}" class="action-btn-heritage">
+                    <div class="action-icon-heritage bg-success-subtle text-success">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <span class="fw-bold">Buscar Alojamientos</span>
+                </a>
+                <a href="{% url 'Mapa' %}" class="action-btn-heritage">
+                    <div class="action-icon-heritage bg-info-subtle text-info">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <span class="fw-bold">Explorar Mapa</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block modals %}
+<!-- Modal para Subir Contenido -->
+<div class="modal fade" id="subirModal" tabindex="-1" aria-labelledby="subirModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-heritage">
+            <div class="modal-header-heritage">
+                <h5 class="modal-title" id="subirModalLabel">
+                    <i class="fas fa-upload me-2"></i>
+                    Añadir Nuevo {% if user.tipo_usuario == 'vendedor' %}Producto{% else %}Servicio{% endif %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            {% if user.tipo_usuario == 'vendedor' %}
+                {% url 'subir_producto' as action_url %}
+            {% elif user.tipo_usuario == 'restaurantero' %}
+                {% url 'subir_gastronomia' as action_url %}
+            {% elif user.tipo_usuario == 'proveedor_experiencias' %}
+                {% url 'subir_experiencia' as action_url %}
+            {% elif user.tipo_usuario == 'proveedor_servicios' %}
+                {% url 'subir_servicio' as action_url %}
+            {% endif %}
+
+            <form action="{{ action_url }}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body-heritage">
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer-heritage">
+                    <button type="button" class="btn btn-secondary-action" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-premium-action">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Perfil -->
+<div class="modal fade" id="editPerfilModal" tabindex="-1" aria-labelledby="editPerfilModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-heritage">
+            <div class="modal-header-heritage">
+                <h5 class="modal-title" id="editPerfilModalLabel">
+                    <i class="fas fa-user-cog me-2"></i>Editar Perfil
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'editar_perfil' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body-heritage">
+                    <div class="mb-3">
+                        <label for="foto_perfil" class="form-label fw-bold small text-secondary">Foto de Perfil</label>
+                        <input type="file" name="foto_perfil" id="foto_perfil" class="form-control-heritage" accept="image/*">
+                        <div class="form-text text-muted">Sube una imagen cuadrada de alta calidad.</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nombre" class="form-label fw-bold small text-secondary">Nombre</label>
+                            <input type="text" name="nombre" id="nombre" class="form-control-heritage" value="{{ user.nombre }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="apellido" class="form-label fw-bold small text-secondary">Apellido</label>
+                            <input type="text" name="apellido" id="apellido" class="form-control-heritage" value="{{ user.apellido }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-bold small text-secondary">Correo Electrónico</label>
+                        <input type="email" name="email" id="email" class="form-control-heritage" value="{{ user.email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label fw-bold small text-secondary">Teléfono / WhatsApp</label>
+                        <input type="text" name="telefono" id="telefono" class="form-control-heritage" value="{{ user.telefono|default:'' }}" placeholder="Ej: 3123456789" required>
+                        <div class="form-text text-muted">Para que los clientes se contacten contigo por WhatsApp.</div>
+                    </div>
+                </div>
+                <div class="modal-footer-heritage">
+                    <button type="button" class="btn btn-secondary-action" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-premium-action">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard_vendedor.js' %}"></script>
+{% endblock %}

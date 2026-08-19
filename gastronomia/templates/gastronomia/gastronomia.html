@@ -1,66 +1,82 @@
-{% extends "WakaTurApp/base2.html" %}
+{% extends "YumanoApp/base_modern.html" %}
 
 {% load static %}
 
-{% block title %}	WakaTur │ Gastronomia	{% endblock %}
+{% block title %}	YÚMANO │ Gastronomia	{% endblock %}
 
 {% block content %}
-<!-- Home -->
-
-<div class="home">
-	<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{% static 'images/gastronomia/arepas.jpg' %}"></div>
-	<div class="home_content">
-		<div class="home_title">Gastronomía</div>
-	</div>
+<!-- Hero Banner Moderno -->
+<div class="hero-banner-modern mb-5" style="height: 45vh; min-height: 400px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('{% static "images/gastronomia/arepas.jpg" %}') center/cover no-repeat;">
+    <div class="container h-100 position-relative" style="z-index: 2;">
+        <div class="row h-100 align-items-center justify-content-center text-center">
+            <div class="col-lg-9 animate-fadeInUp">
+                <h1 class="display-3 fw-bold text-white mb-3 text-shadow">Sabores Auténticos</h1>
+                <p class="lead text-white mb-5 fw-light fs-4 text-shadow">Descubre la exquisita oferta gastronómica de nuestra región</p>
+                
+                <!-- Buscador Premium -->
+                <div class="card bg-white bg-opacity-25 backdrop-blur border-0 rounded-pill p-3 mx-auto shadow-lg" style="max-width: 700px;">
+                    <form class="d-flex" method="GET" action="">
+                        <div class="input-group align-items-center">
+                            <span class="bg-transparent border-0 text-white px-3">
+                                <i class="fas fa-search fs-5"></i>
+                            </span>
+                            <input class="form-control bg-transparent border-0 text-white shadow-none placeholder-white fs-5" type="search" placeholder="¿Qué quieres comer hoy?" aria-label="Search" name="q">
+                            <button class="btn btn-premium rounded-pill px-5 py-2 fw-bold ms-2" type="submit">Buscar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<div class="container mb-5">
+    <!-- Lista de Gastronomía -->
 
-<!-- Search -->
-
-<div class="search">
-
-
-	<!-- Search Contents -->
-
-	<div class="container fill_height">
-		<div class="row fill_height">
-			<div class="col fill_height">
-
-				<!-- Search Tabs -->
-
-				<div class="search_tabs_container">
-					<div
-						class="search_tabs d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-between justify-content-start">
-						<div
-							class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start">
-							<a class="link" href="{% url 'alojamientos:Alojamientos' %}"><img src="{% static 'images/iconos/alojamientos.png' %} "
-									alt=""><span>alojamientos</span></a>
+		<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+			{% for item in gastronomia %}
+			<div class="col">
+				<div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden" style="transition: all 0.3s ease;">
+					<div class="position-relative">
+						{% if item.imagen %}
+						<img src="{{ item.imagen.url }}" class="card-img-top" alt="{{ item.nombre }}" style="height: 250px; object-fit: cover;">
+						{% else %}
+						<div class="bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+							<i class="fas fa-utensils fa-3x text-secondary opacity-25"></i>
 						</div>
-						<div
-							class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-							<a class="link" href="{% url 'Experiencias' %}"><img src="{% static 'images/iconos/turismo.png' %}" alt="">experiencias</a>
+						{% endif %}
+						<div class="position-absolute top-0 end-0 m-3">
+							<span class="badge bg-white text-dark shadow-sm fs-6 px-3 py-2 rounded-pill">
+								$ {{ item.precio }} <small>COP</small>
+							</span>
 						</div>
-						<div
-							class="search_tab active d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-							<a class="link" href="{% url 'Gastronomia' %}"><img src="{% static 'images/iconos/gastronomia.png' %}"
-									alt="">gastronomía</a>
+					</div>
+					
+					<div class="card-body p-4">
+						<div class="d-flex justify-content-between align-items-center mb-2">
+							<h5 class="card-title fw-bold mb-0 text-truncate" title="{{ item.nombre }}">{{ item.nombre }}</h5>
 						</div>
-						<div
-							class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-							<a class="link" href="{% url 'Servicios' %}"><img src="{% static 'images/iconos/servicios.png' %}"
-									alt="">servicios</a>
-						</div>
-						<div
-							class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-							<a class="link" href="{% url 'Tienda' %}"><img src="{% static 'images/iconos/tiendas.png' %}" alt="">tiendas</a>
+						
+						<p class="card-text text-secondary mb-4">{{ item.descripcion|truncatewords:20 }}</p>
+						
+						<div class="mt-auto">
+							<a href="{% url 'gastronomia:gastronomia_detalle' item.id %}" class="btn btn-outline-success w-100 rounded-pill fw-bold">
+								Ver Detalles
+							</a>
 						</div>
 					</div>
 				</div>
 			</div>
+			{% empty %}
+			<div class="col-12 text-center py-5">
+				<div class="text-muted mb-3">
+					<i class="fas fa-utensils fa-3x opacity-50"></i>
+				</div>
+				<h4 class="fw-bold">No hay opciones gastronómicas disponibles</h4>
+				<p class="text-secondary">Vuelve pronto para descubrir nuevos sabores.</p>
+			</div>
+			{% endfor %}
 		</div>
 	</div>
-</div>
-
-
-
+					
 {% endblock %}
