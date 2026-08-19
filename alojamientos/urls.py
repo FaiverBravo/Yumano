@@ -27,9 +27,7 @@ urlpatterns = [
     
     path('subir-imagenes/', views.subir_imagenes_alojamiento, name='subir_imagenes_alojamiento'),
 
-    path('<int:id>/reservar/', views.reservar_alojamiento, name='reservar_alojamiento'),
-
     path('imagenes/<int:id>/eliminar/', views.eliminar_imagen, name='eliminar_imagen'),
     
-    
+    path('gestionar-rapido/<int:id>/', views.gestionar_alojamiento_rapido, name='gestionar_alojamiento_rapido'),
 ]

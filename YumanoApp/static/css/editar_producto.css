@@ -1,0 +1,25 @@
+/* Estilos para el formulario en la página de edición */
+    form p label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: inherit;
+    }
+    form p input, form p select, form p textarea {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(128, 128, 128, 0.2);
+        margin-bottom: 15px;
+        background-color: var(--input-bg, transparent);
+        color: inherit;
+    }
+    form p input[type="checkbox"] {
+        width: auto;
+        margin-right: 10px;
+    }
+    form p input[type="file"] {
+        padding: 6px 10px !important;
+        cursor: pointer;
+        line-height: 1.5;
+    }

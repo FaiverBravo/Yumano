@@ -1,0 +1,11 @@
+🎬 ¿Dónde y cómo colocar el archivo de video?
+El Hero ya quedó programado con un mecanismo de fallback (respaldo). Esto significa que si no hay video o tarda en cargar, el sitio mostrará automáticamente la imagen de siempre (home_slider.jpg) como fondo de pantalla, manteniendo el sitio impecable.
+
+Cuando tengas el video listo, solo debes seguir estos pasos:
+
+Ubicación del archivo: Guarda el video en la siguiente ruta de tu proyecto: 
+
+YumanoApp/static/images/inicio/
+Nombre del archivo: Nómbralo exactamente hero_video.mp4 (debe estar en formato .mp4).
+Recomendación de optimización: Se aconseja que sea un video corto (10 a 15 segundos) de tomas aéreas o paisajes de San Agustín, y que esté comprimido para web (menos de 5-10 MB) para no afectar el tiempo de carga del sitio.
+Actualización automática: Al colocar el archivo con ese nombre en esa carpeta, el navegador lo cargará y lo reproducirá en loop de forma automática.

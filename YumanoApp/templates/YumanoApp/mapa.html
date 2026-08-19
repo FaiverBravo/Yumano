@@ -1,0 +1,107 @@
+{% extends "YumanoApp/base_modern.html" %}
+{% load static %}
+
+{% block title %}YÚMANO │ Mapa de San Agustín{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<link rel="stylesheet" href="{% static 'css/mapa.css' %}?v=1.2">
+{% endblock %}
+
+{% block content %}
+<section style="width: 100%; height: calc(100vh - 76px); min-height: 500px; position: relative;">
+    <div id="mapa" style="width: 100%; height: 100%;"></div>
+
+    <!-- Barra de Búsqueda del Mapa -->
+    <div id="map-search-bar" class="map-search-container">
+        <div class="d-flex align-items-center gap-2">
+            <div class="input-group flex-grow-1">
+                <span class="input-group-text bg-transparent border-0 text-muted"><i class="fas fa-search"></i></span>
+                <input type="text" id="map-search-input" class="form-control bg-transparent border-0 shadow-none" placeholder="Buscar lugar o servicio...">
+            </div>
+        </div>
+        <div class="map-filter-chips mt-2 d-flex gap-2 flex-wrap">
+            <button class="chip-filter active" data-layer="all" onclick="toggleAllLayers(this)">
+                <i class="fas fa-globe-americas me-1"></i>Todos
+            </button>
+            <button class="chip-filter" data-layer="turismo" onclick="toggleSingleLayer(this, 'turismo')">
+                <i class="fas fa-landmark me-1"></i>Turismo
+            </button>
+            <button class="chip-filter" data-layer="alojamientos" onclick="toggleSingleLayer(this, 'alojamientos')">
+                <i class="fas fa-bed me-1"></i>Alojamientos
+            </button>
+            <button class="chip-filter" data-layer="gastronomia" onclick="toggleSingleLayer(this, 'gastronomia')">
+                <i class="fas fa-utensils me-1"></i>Gastronomía
+            </button>
+            <button class="chip-filter" data-layer="aventura" onclick="toggleSingleLayer(this, 'aventura')">
+                <i class="fas fa-hiking me-1"></i>Aventura
+            </button>
+            <button class="chip-filter" data-layer="servicios" onclick="toggleSingleLayer(this, 'servicios')">
+                <i class="fas fa-concierge-bell me-1"></i>Servicios
+            </button>
+            <button class="chip-filter" data-layer="tiendas" onclick="toggleSingleLayer(this, 'tiendas')">
+                <i class="fas fa-store me-1"></i>Tiendas
+            </button>
+        </div>
+    </div>
+
+    <!-- Panel de Instrucciones Colapsable -->
+    <div id="routing-panel" class="glass-card d-none" style="position: absolute; top: 100px; right: 20px; z-index: 1000; max-width: 300px; max-height: 70vh; overflow-y: auto;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0 fw-bold"><i class="fas fa-route me-2"></i>Ruta</h6>
+            <button class="btn-close btn-sm" onclick="closeRouting()"></button>
+        </div>
+        <div id="routing-details"></div>
+    </div>
+
+    <!-- Botones flotantes del Mapa (Esquina inferior derecha) -->
+    <div class="map-controls-floating">
+        <!-- Switcher de Mapa Estándar / Satélite -->
+        <div class="map-layer-switcher shadow">
+            <button id="btn-map-standard" class="btn-layer active" title="Mapa Estándar">
+                <i class="fas fa-map me-1"></i>Estándar
+            </button>
+            <button id="btn-map-satellite" class="btn-layer" title="Satélite">
+                <i class="fas fa-satellite me-1"></i>Satélite
+            </button>
+        </div>
+
+        <button id="locate-btn" class="btn-floating-map shadow" title="Mi Ubicación">
+            <i class="fas fa-crosshairs"></i>
+        </button>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+<!-- Pasar las Rutas Estáticas al Archivo JavaScript -->
+<script>
+    var staticUrls = {
+        turismoIcon: "{% static 'images/mapa/marker-icon-2x-green.png' %}",
+        Shadow: "{% static 'images/mapa/marker-shadow.png' %}",
+        alojamientosIcon: "{% static 'images/mapa/marker-icon-2x-violet.png' %}",
+        gastronomiaIcon: "{% static 'images/mapa/marker-icon-2x-gold.png' %}",
+        aventuraIcon: "{% static 'images/mapa/marker-icon-2x-blue.png' %}",
+        serviciosIcon: "{% static 'images/mapa/marker-icon-2x-grey.png' %}",
+        tiendasIcon: "{% static 'images/mapa/marker-icon-2x-orange.png' %}",
+        contactoIcon: "{% static 'images/mapa/marker-icon-2x-black.png' %}",
+        geoIcon: "{% static 'images/mapa/marker-yo.png' %}",
+        milestoneIcon: "{% static 'images/iconos/milestone_1.png' %}",
+        hImage: "{% static 'images/alojamientos/h.jpg' %}",
+        lavapatasImage: "{% static 'images/inicio/lavapatas.jpg' %}",
+        dondeRichard1Image: "{% static 'images/gastronomia/dondeRichard1.jpg' %}",
+        doñaNury1Image: "{% static 'images/gastronomia/doñaNury1.jpg' %}",
+        malibu1Image: "{% static 'images/gastronomia/malibu1.jpg' %}",
+        r2Image: "{% static 'images/gastronomia/r2.jpg' %}",
+        logofImage: "{% static 'images/iconos/Icono.png' %}",
+        logofbravoImage: "{% static 'images/iconos/logofbravo.png' %}",
+    };
+</script>
+
+<!-- Llamado al Archivo JavaScript -->  
+<script src="{% static 'js/mapa.js' %}?v=1.2"></script>
+{% endblock %}

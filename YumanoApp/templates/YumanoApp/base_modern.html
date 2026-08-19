@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}YÚMANO | Red ancestral, guía digital{% endblock %}</title>
+
+    <!-- Meta Tags SEO -->
+    <meta name="description"
+        content="YÚMANO: Red ancestral, guía digital. Encuentra alojamientos, experiencias, gastronomía y servicios en San Agustín.">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/iconos/Icono.png' %}">
+
+    <!-- PWA -->
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#2D5A27">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="{% static 'images/iconos/Icono.png' %}">
+
+    <!-- Fuentes Premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=Inter:wght@300;400;600;700&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Inicialización de Tema Oscuro -->
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+        }
+    </script>
+
+    <!-- CSS: Bootstrap 5 & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <div class="d-none">
+        {% csrf_token %}
+    </div>
+
+    <!-- Mobile Top Header (Visible only on mobile devices) -->
+    <header class="mobile-header">
+        <a href="{% url 'Inicio' %}" class="mobile-header-brand d-flex align-items-center text-decoration-none">
+            <img src="{% static 'images/iconos/Icono.png' %}" alt="YÚMANO Logo">
+            <span>YÚMANO</span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <!-- Search Button for Mobile -->
+            <button class="btn btn-sm btn-outline-secondary rounded-circle open-search-btn"
+                style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: none; background: var(--glass-bg);">
+                <i class="fas fa-search"></i>
+            </button>
+            <!-- Theme Toggle for Mobile -->
+            <button id="themeToggleMobile" class="btn btn-sm btn-outline-secondary rounded-circle"
+                style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: none; background: var(--glass-bg);">
+                <i class="fas fa-moon themeIconMobile"></i>
+            </button>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard_view' %}"
+                class="d-flex align-items-center justify-content-center rounded-circle overflow-hidden bg-primary shadow-sm"
+                style="width: 38px; height: 38px; border: 2px solid var(--border-color);">
+                {% if user.foto_perfil %}
+                <img src="{{ user.foto_perfil.url }}" alt="{{ user.nombre }}"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                <span class="text-white fw-bold small">{{ user.nombre|first|upper }}</span>
+                {% endif %}
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn btn-outline-success btn-sm rounded-pill px-3 py-1">Entrar</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top navbar-modern">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'Inicio' %}">
+                <img src="{% static 'images/iconos/Icono.png' %}" alt="YÚMANO Logo">
+                <span class="fw-bold">YÚMANO</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'Inicio' %}">Inicio</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Categorías
+                        </a>
+                        <ul class="dropdown-menu border-0 shadow rounded-4 p-2" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item rounded-3 py-2" href="{% url 'alojamientos:Alojamientos' %}"><i
+                                        class="fas fa-bed text-success me-2"></i>Alojamientos</a></li>
+                            <li><a class="dropdown-item rounded-3 py-2" href="{% url 'experiencias:Experiencias' %}"><i
+                                        class="fas fa-hiking text-warning me-2"></i>Experiencias</a></li>
+                            <li><a class="dropdown-item rounded-3 py-2" href="{% url 'gastronomia:Gastronomia' %}"><i
+                                        class="fas fa-utensils text-danger me-2"></i>Gastronomía</a></li>
+                            <li><a class="dropdown-item rounded-3 py-2" href="{% url 'tienda:Tienda' %}"><i
+                                        class="fas fa-store text-primary me-2"></i>Artesanías</a></li>
+                            <li><a class="dropdown-item rounded-3 py-2" href="{% url 'servicios:Servicios' %}"><i
+                                        class="fas fa-concierge-bell text-secondary me-2"></i>Servicios</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="{% url 'Nosotros' %}">Nosotros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'Mapa' %}">Mapa</a></li>
+
+                    <!-- Search Button -->
+                    <li class="nav-item d-flex align-items-center mx-1">
+                        <button class="btn btn-sm btn-outline-secondary rounded-circle open-search-btn"
+                            style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border: none; background: var(--glass-bg);">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </li>
+                    <!-- Theme Toggle -->
+                    <li class="nav-item d-flex align-items-center mx-2">
+                        <button id="themeToggle" class="btn btn-sm btn-outline-secondary rounded-circle"
+                            style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border: none; background: var(--glass-bg);">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link text-secondary" href="{% url 'contacto:Contacto' %}">Anuncia
+                            tu empresa</a></li>
+
+                    {% if user.is_authenticated %}
+                    <li class="nav-item ms-lg-3">
+                        <a href="{% url 'dashboard_view' %}" class="btn btn-premium btn-sm">Mi Panel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i></a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item ms-lg-3">
+                        <a href="{% url 'login' %}" class="btn btn-outline-success btn-sm rounded-pill px-4">Entrar</a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a href="{% url 'registro' %}" class="btn btn-premium btn-sm">Registrarse</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Toast Notification Container -->
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;" id="toastContainer"></div>
+
+        {% if messages %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                {% for message in messages %}
+                let type = 'info';
+                {% if message.tags == 'success' %}
+                type = 'success';
+                {% elif message.tags == 'warning' %}
+                type = 'warning';
+                {% elif message.tags == 'error' or message.tags == 'danger' %}
+                type = 'danger';
+                {% endif %}
+                showToast("{{ message|escapejs }}", type);
+                {% endfor %}
+            });
+        </script>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block modals %}
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer class="footer-modern">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <img src="{% static 'images/iconos/Icono.png' %}" alt="YÚMANO Logo"
+                        style="width: 80px; height: auto;">
+                    <h4 class="mb-1">YÚMANO</h4>
+                    <p class="text-warning small fw-bold mb-3">Red ancestral, guía digital</p>
+                    <p class="text-secondary">Facilitamos a los turistas ubicar todos los servicios de la cultura
+                        Agustiniana de manera detallada y actualizada.</p>
+                    <div class="social-icons mt-4">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 ms-auto">
+                    <h5 class="mb-4">Enlaces</h5>
+                    <ul class="list-unstyled text-secondary">
+                        <li class="mb-2"><a href="{% url 'Inicio' %}"
+                                class="text-decoration-none text-secondary">Inicio</a></li>
+                        <li class="mb-2"><a href="{% url 'Nosotros' %}"
+                                class="text-decoration-none text-secondary">Nosotros</a></li>
+                        <li class="mb-2"><a href="{% url 'Mapa' %}" class="text-decoration-none text-secondary">Mapa</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="mb-4">Contacto</h5>
+                    <ul class="list-unstyled text-secondary">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-warning"></i> San Agustín Huila, COL
+                        </li>
+                        <li class="mb-2"><i class="fas fa-phone me-2 text-warning"></i> (57) 310 340 9882</li>
+                        <li class="mb-2"><i class="fas fa-envelope me-2 text-warning"></i> faivertkd@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-5 border-secondary">
+            <div class="text-center text-secondary small">
+                <p>&copy; 2026 YÚMANO. Red ancestral, guía digital | Todos los derechos reservados | Faiver Herney Bravo
+                    Jamioy</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Global Search Modal -->
+    <div id="searchModal" class="search-modal-overlay">
+        <div class="search-modal-card glass-card">
+            <div class="search-modal-header">
+                <i class="fas fa-search search-modal-icon"></i>
+                <input type="text" id="searchInput" placeholder="¿Qué estás buscando en YÚMANO?..." autocomplete="off">
+                <button id="closeSearchBtn" class="btn-close-custom"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="search-modal-body">
+                <!-- Category Chips -->
+                <div class="search-chips mb-4">
+                    <span class="search-chip active" data-type="all">Todos</span>
+                    <span class="search-chip" data-type="alojamientos"><i
+                            class="fas fa-bed me-1"></i>Alojamientos</span>
+                    <span class="search-chip" data-type="experiencias"><i
+                            class="fas fa-hiking me-1"></i>Experiencias</span>
+                    <span class="search-chip" data-type="gastronomia"><i
+                            class="fas fa-utensils me-1"></i>Gastronomía</span>
+                    <span class="search-chip" data-type="tienda"><i class="fas fa-store me-1"></i>Artesanías</span>
+                    <span class="search-chip" data-type="servicios"><i
+                            class="fas fa-concierge-bell me-1"></i>Servicios</span>
+                </div>
+                <!-- Results Container -->
+                <div id="searchResults" class="search-results-container">
+                    <div class="search-initial-state">
+                        <i class="fas fa-search mb-3 text-muted" style="font-size: 2.5rem;"></i>
+                        <p class="text-secondary">Escribe algo para buscar alojamientos, restaurantes, experiencias,
+                            artesanías y más...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="search-modal-footer">
+                <div class="search-shortcuts">
+                    <span><kbd>ESC</kbd> para cerrar</span>
+                    <span class="ms-3"><kbd>↵</kbd> para seleccionar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Visible only on mobile devices) -->
+    <div class="mobile-nav-bar">
+        <a href="{% url 'Inicio' %}" class="mobile-nav-item" id="mobile-nav-inicio">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="{% url 'Mapa' %}" class="mobile-nav-item" id="mobile-nav-mapa">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Mapa</span>
+        </a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'dashboard_view' %}#favoritos-section" class="mobile-nav-item" id="mobile-nav-favoritos">
+            <i class="fas fa-heart"></i>
+            <span>Favoritos</span>
+        </a>
+        <a href="{% url 'dashboard_view' %}" class="mobile-nav-item" id="mobile-nav-panel">
+            <i class="fas fa-user-circle"></i>
+            <span>Mi Panel</span>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="mobile-nav-item" id="mobile-nav-favoritos">
+            <i class="fas fa-heart"></i>
+            <span>Favoritos</span>
+        </a>
+        <a href="{% url 'login' %}" class="mobile-nav-item" id="mobile-nav-entrar">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Entrar</span>
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- JS: Bootstrap 5 Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+
+    <!-- Service Worker Registration & Global Theme JS -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register("{% static 'sw.js' %}").then(function (reg) {
+                    console.log('YÚMANO SW registrado:', reg.scope);
+                }).catch(function (err) {
+                    console.log('YÚMANO SW error:', err);
+                });
+            });
+        }
+    </script>
+    <script src="{% static 'js/theme.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,298 @@
+{% extends "YumanoApp/base_modern.html" %}
+{% load static %}
+
+{% block title %}Mi Aventura | YÚMANO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard_turista.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Header -->
+    <div class="dashboard-header-premium mb-5 d-flex align-items-center justify-content-between flex-wrap gap-4">
+        <div class="d-flex align-items-center gap-4">
+            <div class="user-avatar overflow-hidden d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; border-radius: 50%; background: #f6f3ee; border: 2px solid #e5e2dd;">
+                {% if user.foto_perfil %}
+                    <img src="{{ user.foto_perfil.url }}" alt="{{ user.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                    <span class="fw-bold text-success" style="font-size: 2.5rem;">{{ user.nombre|first|upper }}</span>
+                {% endif %}
+            </div>
+            <div>
+                <h1 class="fw-bold mb-1">¡Hola, {{ user.nombre }} {{ user.apellido }}! 👋</h1>
+                <p class="mb-0">Es un gran día para descubrir algo nuevo en San Agustín.</p>
+                {% if user.telefono %}
+                    <small class="text-muted"><i class="fab fa-whatsapp text-success me-1"></i> {{ user.telefono }}</small>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <button type="button" class="btn btn-secondary-action" data-bs-toggle="modal" data-bs-target="#editPerfilModal">
+                <i class="fas fa-user-edit me-2"></i>Editar Perfil
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <!-- Stats -->
+            <div class="d-flex gap-3 mb-5">
+                <div class="adventure-stat-heritage">
+                    <h3 class="mb-0 text-success">{{ reservas_count|default:"0" }}</h3>
+                    <small class="text-secondary fw-semibold">Reservas</small>
+                </div>
+                <div class="adventure-stat-heritage">
+                    <h3 class="mb-0 text-warning">12</h3>
+                    <small class="text-secondary fw-semibold">Puntos</small>
+                </div>
+                <div class="adventure-stat-heritage">
+                    <h3 class="mb-0 text-info">3</h3>
+                    <small class="text-secondary fw-semibold">Destinos</small>
+                </div>
+            </div>
+
+            <!-- Próximos Viajes -->
+            <h3 class="fw-bold mb-4">Tus Próximas Aventuras</h3>
+            {% if mis_reservas %}
+                {% for reserva in mis_reservas %}
+                <div class="glass-card-premium p-3 d-flex align-items-center gap-4 mb-3">
+                    <div class="bg-success-subtle rounded-4 p-3 text-success">
+                        <i class="fas fa-hotel fa-2x"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-1">{{ reserva.alojamiento.nombre }}</h5>
+                        <p class="small text-secondary mb-0">
+                            <i class="far fa-calendar-alt me-2"></i>{{ reserva.fecha_inicio|date:"d M" }} - {{ reserva.fecha_fin|date:"d M, Y" }}
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge rounded-pill bg-success-subtle text-success px-3 mb-2 d-inline-block">{{ reserva.estado|title }}</span>
+                        <h6 class="fw-bold mb-0">${{ reserva.precio_total }}</h6>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="glass-card-premium text-center py-5">
+                    <i class="fas fa-map-marked-alt fa-3x text-secondary opacity-25 mb-3"></i>
+                    <h5>¿A dónde vamos hoy?</h5>
+                    <p class="text-secondary">Aún no tienes reservas programadas.</p>
+                    <a href="{% url 'alojamientos:Alojamientos' %}" class="btn btn-premium-action mt-2 text-decoration-none">Buscar Alojamiento</a>
+                </div>
+            {% endif %}
+
+            <!-- Mis Favoritos Guardados -->
+            <h3 class="fw-bold mt-5 mb-4" id="favoritos-section">Mis Favoritos Guardados</h3>
+            {% if mis_favoritos %}
+                <div class="row g-3">
+                    {% for fav in mis_favoritos %}
+                        <div class="col-md-6 fav-item-card" id="fav-card-{{ fav.id }}">
+                            <div class="glass-card-premium p-3 d-flex gap-3 align-items-center h-100 position-relative">
+                                {% if fav.alojamiento %}
+                                    <div class="rounded-3 overflow-hidden" style="width: 80px; height: 80px; flex-shrink: 0;">
+                                        {% if fav.alojamiento.imagenes.first %}
+                                            <img src="{{ fav.alojamiento.imagenes.first.imagen.url }}" alt="{{ fav.alojamiento.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-success-subtle w-100 h-100 d-flex align-items-center justify-content-center text-success">
+                                                <i class="fas fa-hotel fa-2x"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="badge bg-success-subtle text-success mb-1">Alojamiento</span>
+                                        <h6 class="fw-bold mb-1"><a href="{% url 'alojamientos:alojamiento_detalle' fav.alojamiento.id %}" class="text-decoration-none text-reset">{{ fav.alojamiento.nombre }}</a></h6>
+                                        <small class="text-muted"><i class="fas fa-map-marker-alt me-1 text-warning"></i>{{ fav.alojamiento.ubicacion }}</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 fav-btn" data-tipo="alojamiento" data-id="{{ fav.alojamiento.id }}" title="Quitar de favoritos">
+                                        <i class="fas fa-heart text-danger"></i>
+                                    </button>
+                                {% elif fav.gastronomia %}
+                                    <div class="rounded-3 overflow-hidden" style="width: 80px; height: 80px; flex-shrink: 0;">
+                                        {% if fav.gastronomia.imagen %}
+                                            <img src="{{ fav.gastronomia.imagen.url }}" alt="{{ fav.gastronomia.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-danger-subtle w-100 h-100 d-flex align-items-center justify-content-center text-danger">
+                                                <i class="fas fa-utensils fa-2x"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="badge bg-danger-subtle text-danger mb-1">Gastronomía</span>
+                                        <h6 class="fw-bold mb-1"><a href="{% url 'gastronomia:gastronomia_detalle' fav.gastronomia.id %}" class="text-decoration-none text-reset">{{ fav.gastronomia.nombre }}</a></h6>
+                                        <small class="text-muted">${{ fav.gastronomia.precio }}</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 fav-btn" data-tipo="gastronomia" data-id="{{ fav.gastronomia.id }}" title="Quitar de favoritos">
+                                        <i class="fas fa-heart text-danger"></i>
+                                    </button>
+                                {% elif fav.experiencia %}
+                                    <div class="rounded-3 overflow-hidden" style="width: 80px; height: 80px; flex-shrink: 0;">
+                                        {% if fav.experiencia.imagen %}
+                                            <img src="{{ fav.experiencia.imagen.url }}" alt="{{ fav.experiencia.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-warning-subtle w-100 h-100 d-flex align-items-center justify-content-center text-warning">
+                                                <i class="fas fa-hiking fa-2x"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="badge bg-warning-subtle text-warning mb-1">Experiencia</span>
+                                        <h6 class="fw-bold mb-1"><a href="{% url 'experiencias:experiencia_detalle' fav.experiencia.id %}" class="text-decoration-none text-reset">{{ fav.experiencia.nombre }}</a></h6>
+                                        <small class="text-muted">${{ fav.experiencia.precio }}</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 fav-btn" data-tipo="experiencia" data-id="{{ fav.experiencia.id }}" title="Quitar de favoritos">
+                                        <i class="fas fa-heart text-danger"></i>
+                                    </button>
+                                {% elif fav.servicio %}
+                                    <div class="rounded-3 overflow-hidden" style="width: 80px; height: 80px; flex-shrink: 0;">
+                                        {% if fav.servicio.imagen %}
+                                            <img src="{{ fav.servicio.imagen.url }}" alt="{{ fav.servicio.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-secondary-subtle w-100 h-100 d-flex align-items-center justify-content-center text-secondary">
+                                                <i class="fas fa-concierge-bell fa-2x"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="badge bg-secondary-subtle text-secondary mb-1">Servicio</span>
+                                        <h6 class="fw-bold mb-1"><a href="{% url 'servicios:servicio_detalle' fav.servicio.id %}" class="text-decoration-none text-reset">{{ fav.servicio.nombre }}</a></h6>
+                                        <small class="text-muted">${{ fav.servicio.precio }}</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 fav-btn" data-tipo="servicio" data-id="{{ fav.servicio.id }}" title="Quitar de favoritos">
+                                        <i class="fas fa-heart text-danger"></i>
+                                    </button>
+                                {% elif fav.producto %}
+                                    <div class="rounded-3 overflow-hidden" style="width: 80px; height: 80px; flex-shrink: 0;">
+                                        {% if fav.producto.imagen %}
+                                            <img src="{{ fav.producto.imagen.url }}" alt="{{ fav.producto.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-primary-subtle w-100 h-100 d-flex align-items-center justify-content-center text-primary">
+                                                <i class="fas fa-store fa-2x"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="badge bg-primary-subtle text-primary mb-1">Tienda</span>
+                                        <h6 class="fw-bold mb-1"><a href="{% url 'tienda:producto_detalle' fav.producto.id %}" class="text-decoration-none text-reset">{{ fav.producto.nombre }}</a></h6>
+                                        <small class="text-muted">${{ fav.producto.precio }}</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 fav-btn" data-tipo="producto" data-id="{{ fav.producto.id }}" title="Quitar de favoritos">
+                                        <i class="fas fa-heart text-danger"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="glass-card-premium text-center py-5">
+                    <i class="far fa-heart fa-3x text-secondary opacity-25 mb-3"></i>
+                    <h5>Guarda tus favoritos</h5>
+                    <p class="text-secondary mb-0">Explora la plataforma y haz clic en el corazón para guardar lo que más te guste.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Acciones Rápidas -->
+            <h4 class="fw-bold mb-4">Acciones Rápidas</h4>
+            <div class="d-flex flex-column gap-3">
+                <a href="{% url 'alojamientos:Alojamientos' %}" class="action-btn-heritage">
+                    <div class="action-icon-heritage bg-success-subtle text-success">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <span class="fw-bold">Buscar Hoteles</span>
+                </a>
+                <a href="{% url 'experiencias:Experiencias' %}" class="action-btn-heritage">
+                    <div class="action-icon-heritage bg-warning-subtle text-warning">
+                        <i class="fas fa-hiking"></i>
+                    </div>
+                    <span class="fw-bold">Explorar Tours</span>
+                </a>
+                <a href="{% url 'gastronomia:Gastronomia' %}" class="action-btn-heritage">
+                    <div class="action-icon-heritage bg-danger-subtle text-danger">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <span class="fw-bold">Donde Comer</span>
+                </a>
+                <a href="{% url 'tienda:Tienda' %}" class="action-btn-heritage">
+                    <div class="action-icon-heritage bg-primary-subtle text-primary">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <span class="fw-bold">Comprar Artesanías</span>
+                </a>
+                <a href="{% url 'servicios:Servicios' %}" class="action-btn-heritage">
+                    <div class="action-icon-heritage bg-secondary-subtle text-secondary">
+                        <i class="fas fa-concierge-bell"></i>
+                    </div>
+                    <span class="fw-bold">Servicios Locales</span>
+                </a>
+                <a href="{% url 'Mapa' %}" class="action-btn-heritage">
+                    <div class="action-icon-heritage bg-info-subtle text-info">
+                        <i class="fas fa-map"></i>
+                    </div>
+                    <span class="fw-bold">Ver el Mapa</span>
+                </a>
+            </div>
+
+            <!-- Recomendación -->
+            <div class="mt-5 p-4 rounded-4 text-white position-relative overflow-hidden" style="background: var(--header-gradient); border: 1px solid var(--border-heritage);">
+                <div class="position-relative z-1">
+                    <h5 class="fw-bold mb-3">Tip de Viaje</h5>
+                    <p class="small opacity-75">No olvides llevar ropa cómoda y abrigo para las noches en San Agustín. ¡La temperatura puede bajar!</p>
+                </div>
+                <i class="fas fa-lightbulb position-absolute top-0 end-0 m-3 opacity-25 fa-3x"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block modals %}
+<!-- Modal Editar Perfil -->
+<div class="modal fade" id="editPerfilModal" tabindex="-1" aria-labelledby="editPerfilModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-heritage">
+            <div class="modal-header-heritage">
+                <h5 class="modal-title" id="editPerfilModalLabel">
+                    <i class="fas fa-user-cog me-2"></i>Editar Perfil
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'editar_perfil' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body-heritage">
+                    <div class="mb-3">
+                        <label for="foto_perfil" class="form-label fw-bold small text-secondary">Foto de Perfil</label>
+                        <input type="file" name="foto_perfil" id="foto_perfil" class="form-control-heritage" accept="image/*">
+                        <div class="form-text text-muted">Sube una imagen cuadrada de alta calidad.</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nombre" class="form-label fw-bold small text-secondary">Nombre</label>
+                            <input type="text" name="nombre" id="nombre" class="form-control-heritage" value="{{ user.nombre }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="apellido" class="form-label fw-bold small text-secondary">Apellido</label>
+                            <input type="text" name="apellido" id="apellido" class="form-control-heritage" value="{{ user.apellido }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-bold small text-secondary">Correo Electrónico</label>
+                        <input type="email" name="email" id="email" class="form-control-heritage" value="{{ user.email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label fw-bold small text-secondary">Teléfono / WhatsApp</label>
+                        <input type="text" name="telefono" id="telefono" class="form-control-heritage" value="{{ user.telefono|default:'' }}" placeholder="Ej: 3123456789">
+                        <div class="form-text text-muted">Para que los anfitriones y guías se contacten contigo por WhatsApp.</div>
+                    </div>
+                </div>
+                <div class="modal-footer-heritage">
+                    <button type="button" class="btn btn-secondary-action" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-premium-action">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

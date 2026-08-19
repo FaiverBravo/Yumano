@@ -1,81 +1,83 @@
-{% extends "WakaTurApp/base2.html" %}
+{% extends "YumanoApp/base_modern.html" %}
 
 {% load static %}
 
-{% block title %}	WakaTur │ Tienda	{% endblock %}
+{% block title %}	YÚMANO │ Tienda	{% endblock %}
 
 {% block content %}
 
-<!-- Home -->
-
-<div class="home">
-	<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{% static 'images/tienda/artesanias.jpg' %}"></div>
-	<div class="home_content">
-		<div class="home_title">Tienda</div>
-	</div>
+<!-- Hero Banner Moderno -->
+<div class="hero-banner-modern mb-5" style="height: 45vh; min-height: 400px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('{% static "images/tienda/artesanias.jpg" %}') center/cover no-repeat;">
+    <div class="container h-100 position-relative" style="z-index: 2;">
+        <div class="row h-100 align-items-center justify-content-center text-center">
+            <div class="col-lg-9 animate-fadeInUp">
+                <h1 class="display-3 fw-bold text-white mb-3 text-shadow">Tienda Artesanal</h1>
+                <p class="lead text-white mb-5 fw-light fs-4 text-shadow">Lleva contigo un pedazo de nuestra cultura e historia</p>
+                
+                <!-- Buscador Premium -->
+                <div class="card bg-white bg-opacity-25 backdrop-blur border-0 rounded-pill p-3 mx-auto shadow-lg" style="max-width: 700px;">
+                    <form class="d-flex" method="GET" action="">
+                        <div class="input-group align-items-center">
+                            <span class="bg-transparent border-0 text-white px-3">
+                                <i class="fas fa-search fs-5"></i>
+                            </span>
+                            <input class="form-control bg-transparent border-0 text-white shadow-none placeholder-white fs-5" type="search" placeholder="¿Qué estás buscando?" aria-label="Search" name="q">
+                            <button class="btn btn-premium rounded-pill px-5 py-2 fw-bold ms-2" type="submit">Buscar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Search -->
-
-<div class="search">
-
-
-	<!-- Search Contents -->
-
-	<div class="container fill_height">
-		<div class="row fill_height">
-			<div class="col fill_height">
-
-				<!-- Search Tabs -->
-
-				<div class="search_tabs_container">
-					<div
-						class="search_tabs d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-between justify-content-start">
-						<div
-							class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start">
-							<a class="link" href="{% url 'alojamientos:Alojamientos' %}"><img src="{% static 'images/iconos/alojamientos.png' %} "
-									alt=""><span>alojamientos</span></a>
-						</div>
-						<div
-							class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-							<a class="link" href="{% url 'Experiencias' %}"><img src="{% static 'images/iconos/turismo.png' %}" alt="">experiencias</a>
-						</div>
-						<div
-							class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-							<a class="link" href="{% url 'Gastronomia' %}"><img src="{% static 'images/iconos/gastronomia.png' %}"
-									alt="">gastronomía</a>
-						</div>
-						<div
-							class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-							<a class="link" href="{% url 'Servicios' %}"><img src="{% static 'images/iconos/servicios.png' %}"
-									alt="">servicios</a>
-						</div>
-						<div
-							class="search_tab active d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-							<a class="link" href="{% url 'Tienda' %}"><img src="{% static 'images/iconos/tiendas.png' %}" alt="">tiendas</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 <!-- Tienda -->
+<div class="container mt-4 mb-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="display-5 fw-bold">Nuestros Productos</h2>
+            <div class="mx-auto bg-success" style="width: 60px; height: 4px; border-radius: 2px;"></div>
+        </div>
+    </div>
 
-<div class="container">
-	<div class="row">
-{% for producto in productos %}
-		<div class="col-md-3">
-
-			<div class="card" style="width: 250px; height: 350px; object-fit: cover; margin: 5px 5px;">
-				<img src="{{producto.imagen.url}}"class="card-img-top">
-				<div class="card-body" style="text-align: center;">
-					<h7 class="card-title">{{producto.nombre}}</h7>
-					<p class="card-text">$&nbsp;{{producto.precio}}</p>
-				</div>
-			</div>
-		</div>
-{% endfor %}
-	</div>
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for producto in productos %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden" style="transition: all 0.3s ease;">
+                <div class="position-relative">
+                    {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 250px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                        <i class="fas fa-shopping-bag fa-3x text-secondary opacity-25"></i>
+                    </div>
+                    {% endif %}
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-white text-dark shadow-sm fs-6 px-3 py-2 rounded-pill">
+                            $ {{ producto.precio }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-body p-3 text-center">
+                    <h6 class="card-title fw-bold mb-2 text-truncate" title="{{ producto.nombre }}">{{ producto.nombre }}</h6>
+                    <div class="mt-3">
+                        <a href="{% url 'tienda:producto_detalle' producto.id %}" class="btn btn-outline-success w-100 rounded-pill fw-bold btn-sm">
+                            Ver Producto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="text-muted mb-3">
+                <i class="fas fa-shopping-bag fa-3x opacity-50"></i>
+            </div>
+            <h4 class="fw-bold">No hay productos disponibles</h4>
+            <p class="text-secondary">Pronto tendremos nuevos recuerdos para ti.</p>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
