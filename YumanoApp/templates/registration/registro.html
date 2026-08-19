@@ -1,0 +1,59 @@
+{% extends "YumanoApp/base_modern.html" %}
+{% load static %}
+
+{% block title %}Registrarse | YÚMANO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="register-page py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="register-wrapper row g-0 animate-fadeInUp">
+                    <div class="col-md-5 d-none d-md-block">
+                        <div class="register-side-img d-flex align-items-end p-5">
+                            <div class="text-white">
+                                <h2 class="display-6 fw-bold" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Únete a YÚMANO</h2>
+                                <p class="lead fw-bold" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Red ancestral, guía digital. Explora o comparte la cultura Agustiniana.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7 p-5">
+                        <div class="mb-4">
+                            <h2 class="fw-bold">Crear Cuenta</h2>
+                            <p class="text-secondary">Completa los datos para empezar tu aventura</p>
+                        </div>
+
+                        <form method="post" class="row g-3">
+                            {% csrf_token %}
+                            
+                            {% for field in form %}
+                                <div class="{% if field.name == 'username' or field.name == 'email' %}col-12{% else %}col-md-6{% endif %}">
+                                    <label class="form-label fw-semibold small">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div class="text-danger extra-small mt-1">
+                                            {{ field.errors|first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-premium w-100 py-3 fs-5">Registrarme</button>
+                            </div>
+
+                            <div class="col-12 text-center mt-3">
+                                <p class="small text-secondary">¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="text-success fw-bold text-decoration-none">Inicia sesión</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

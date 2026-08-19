@@ -1,0 +1,59 @@
+
+/* styles detalle alojamineto */
+/***********************************/
+@import "variables";
+	
+
+    :root {
+        --primary-color: #3498db;
+        --primary-dark: #2980b9;
+        --secondary-color: #2ecc71;
+        --accent-color: #f39c12;
+        --light-bg: #f8f9fa;
+        --dark-text: #343a40;
+        --light-text: #f8f9fa;
+        --border-color: #dee2e6;
+        --shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    }
+    
+    .bg-theme-primary {
+        background-color: var(--primary-color) !important;
+    }
+    
+    .bg-theme-secondary {
+        background-color: var(--secondary-color) !important;
+    }
+    
+    .text-theme-primary {
+        color: var(--primary-color) !important;
+    }
+    
+    .btn-theme-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-dark);
+        color: var(--light-text);
+    }
+    
+    .btn-theme-primary:hover {
+        background-color: var(--primary-dark);
+        color: var(--light-text);
+    }
+    
+    .btn-outline-theme-primary {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    .btn-outline-theme-primary:hover {
+        background-color: var(--primary-color);
+        color: var(--light-text);
+    }
+    
+    .card-shadow {
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+    }
+    
+    .card-shadow:hover {
+        box-shadow: 0 1rem 2rem rgba(0, 0, 0, .2);
+    }

@@ -1,222 +1,179 @@
-{% extends "WakaTurApp/base2.html" %}
+{% extends "YumanoApp/base_modern.html" %}
 
 {% load static %}
 
-{% block title %} WakaTur │ Alojamientos {% endblock %}
+{% block title %} YÚMANO │ Alojamientos {% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/alojamientos.css' %}">
+{% endblock %}
 
 {% block content %}
 
-<!-- Home -->
-<div class="home">
-    <div class="home_background parallax-window" data-parallax="scroll" data-image-src="{% static 'images/alojamientos/masaya.jpg' %}"></div>
-    <div class="home_content">
-        <div class="home_title">alojamientos</div>
-    </div>
-</div>
-
-<!-- Search -->
-<div class="offers">
-    <div class="search">
-        
-        <!-- Search Contents -->
-
-		<div class="container fill_height">
-			<div class="row fill_height">
-				<div class="col fill_height">
-
-					<!-- Search Tabs --->
-
-					<div class="search_tabs_container">
-						<div
-							class="search_tabs d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-between justify-content-start">
-							<div
-								class="search_tab active d-flex flex-row align-items-center justify-content-lg-center justify-content-start">
-									<a class="link" href="{% url 'Alojamientos' %}"><img src="{% static 'images/iconos/alojamientos.png' %} "
-											alt=""><span>alojamientos</span></a>
-							</div>
-							<div
-								class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-								<a class="link" href="{% url 'Experiencias' %}"><img src="{% static 'images/iconos/turismo.png' %}" alt="">experiencias</a>
-							</div>
-							<div
-								class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-								<a class="link" href="{% url 'Gastronomia' %}"><img src="{% static 'images/iconos/gastronomia.png' %}"
-										alt="">gastronomía</a>
-							</div>
-							<div
-								class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-								<a class="link" href="{% url 'Servicios' %}"><img src="{% static 'images/iconos/servicios.png' %}"
-										alt="">servicios</a>
-							</div>
-							<div
-								class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start text-decoration:none">
-								<a class="link" href="{% url 'Tienda' %}"><img src="{% static 'images/iconos/tiendas.png' %}" alt="">tiendas</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-    </div>
-</div>
-
-<!-- Search -->
-<div class="search">
-    <div class="search_inner">
-        <!-- Search Contents -->
-        <div class="container fill_height no-padding">
-            <div class="row fill_height no-margin">
-                <div class="col fill_height no-padding">
-                    <!-- Search Tabs -->
-                    <!-- Search Panel -->
-                    <div class="row">
-                        <div class="col-lg-1 temp_col"></div>
-                        <div class="col-lg-11">
-                            <!-- Offers Sorting -->
-                            <div class="offers_sorting_container">
-                                <ul class="offers_sorting">
-                                    <li>
-                                        <span class="sorting_text">precio</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "original-order" }' data-parent=".price_sorting"><span>show all</span></li>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "price" }' data-parent=".price_sorting"><span>ascending</span></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="sorting_text">ubicación</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "original-order" }'><span>default</span></li>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "name" }'><span>alphabetical</span></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="sorting_text">estrellas</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="filter_btn" data-filter="*"><span>show all</span></li>
-                                            <li class="sort_btn" data-isotope-option='{ "sortBy": "stars" }'><span>ascending</span></li>
-                                            <li class="filter_btn" data-filter=".rating_3"><span>3</span></li>
-                                            <li class="filter_btn" data-filter=".rating_4"><span>4</span></li>
-                                            <li class="filter_btn" data-filter=".rating_5"><span>5</span></li>
-                                        </ul>
-                                    </li>
-                                    <li class="distance_item">
-                                        <span class="sorting_text">distancia del centro</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="num_sorting_btn"><span>distance</span></li>
-                                            <li class="num_sorting_btn"><span>distance</span></li>
-                                            <li class="num_sorting_btn"><span>distance</span></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="sorting_text">comentarios</span>
-                                        <i class="fa fa-chevron-down"></i>
-                                        <ul>
-                                            <li class="num_sorting_btn"><span>review</span></li>
-                                            <li class="num_sorting_btn"><span>review</span></li>
-                                            <li class="num_sorting_btn"><span>review</span></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
+<!-- Hero Banner Moderno -->
+<div class="hero-banner-modern mb-5" style="height: 45vh; min-height: 400px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('{% static "images/alojamientos/masaya.jpg" %}') center/cover no-repeat;">
+    <div class="container h-100 position-relative" style="z-index: 2;">
+        <div class="row h-100 align-items-center justify-content-center text-center">
+            <div class="col-lg-9 animate-fadeInUp">
+                <h1 class="display-3 fw-bold text-white mb-3 text-shadow">Encuentra tu refugio ideal</h1>
+                <p class="lead text-white mb-5 fw-light fs-4 text-shadow">Explora alojamientos únicos en el corazón de San Agustín</p>
+                
+                <!-- Buscador Premium -->
+                <div class="card bg-white bg-opacity-25 backdrop-blur border-0 rounded-pill p-3 mx-auto shadow-lg" style="max-width: 700px;">
+                    <form class="d-flex" method="GET" action="">
+                        <div class="input-group align-items-center">
+                            <span class="bg-transparent border-0 text-white px-3">
+                                <i class="fas fa-search fs-5"></i>
+                            </span>
+                            <input class="form-control bg-transparent border-0 text-white shadow-none placeholder-white fs-5" type="search" placeholder="¿Dónde quieres hospedarte?" aria-label="Search" name="q">
+                            <button class="btn btn-premium rounded-pill px-5 py-2 fw-bold ms-2" type="submit">Buscar</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!--Iniciamos con el contenido de los diferentes alojanientos-->
-{% for alojamiento in alojamientos %}
-<!-- Offers -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <!-- Offers Grid -->
-            <div class="offers_grid">
-                <!-- Offers Item -->
-                <div class="offers_item rating_4">
-                    <div class="row">
-                        <div class="col-lg-1 temp_col"></div>
-                        <div class="col-lg-3 col-1680-4">
-                            <div class="offers_image_container">
-                                <div class="offers_image_background" style="background-image:url('{{alojamiento.imagen.url}}')"></div>
-                                <div class="offer_name"><a href="alojamiento_detalle/{{alojamiento.id}}">{{alojamiento.nombre}}</a></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="offers_content">
-                                <div class="offers_price">$ {{alojamiento.precio}}<span> por noche</span></div>
-                                <div class="rating_r rating_r_5 offers_rating" data-rating="4">
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                </div>
-                                <p class="offers_text">{{alojamiento.descripcion}}</p>
-                                <div class="offers_icons">
-                                    <ul class="offers_icons_list">
-                                        <li class="offers_icons_item"><img src="{% static 'images/iconos/post.png' %}" alt=""></li>
-                                        <li class="offers_icons_item"><img src="{% static 'images/iconos/compass.png' %}" alt=""></li>
-                                        <li class="offers_icons_item"><img src="{% static 'images/iconos/bicycle.png' %}" alt=""></li>
-                                        <li class="offers_icons_item"><img src="{% static 'images/iconos/post.png' %}" alt=""></li>
-                                    </ul>
-                                </div>
-                                <div class="button book_button"><a href="alojamiento_detalle/{{alojamiento.id}}">ver alojamiento<span></span><span></span><span></span></a></div>
-                                <div class="offer_reviews">
-                                    <div class="offer_reviews_content">
-                                        <div class="offer_reviews_title">very good</div>
-                                        <div class="offer_reviews_subtitle">100 reviews</div>
-                                    </div>
-                                    <div class="offer_reviews_rating text-center">8.1</div>
-                                    <p class="offers_text">Estado: {% if alojamiento.disponibilidad %} <class style="color: #00b300;">Disponible</style>{% else %}Cerrado{% endif %}</p>
-                                    <p class="offers_text">Abre: {{alojamiento.abrir}}</p>
-                                    <p class="offers_text">Cierra: {{alojamiento.cerrar}}</p>
-                                    <p class="offers_text">Closed = {{alojamiento.dd}}</p>
-                                    <!-- <p class="offers_text">Habitaciones disponibles: {{ alojamiento.habitaciones_disponibles }}</p> -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
 
-<!-- Categorías -->
-<section class="categorias-container">
-    <h3>Categorías</h3>
-    <hr>
-    <div class="categorias-grid">
-        <div class="categoria-card seleccionado" data-categoria="todos" onclick="filtrarAlojamientos('todos')">
-            <h4>Todos</h4>
-        </div>
-        {% for categoria in categorias %}
-        <div class="categoria-card" data-categoria="{{ categoria.nombre|lower }}" onclick="filtrarAlojamientos('{{ categoria.nombre|lower }}')">
-            <h4>{{ categoria.nombre }}</h4>
-        </div>
-        {% endfor %}
-    </div>
-</section>
-
-<section>
-    <div style="width:75%; background-color: #f8f9fa; margin:auto; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-        <h3 style="color: #343a40; text-align: center;">Comentarios</h3>
-        <hr style="border-top: 1px solid #dee2e6;">
+<div class="container mb-5">
+    <!-- Lista de alojamientos -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for alojamiento in alojamientos %}
-        <div style="margin-bottom: 15px;">
-            <strong style="color: #007bff;">{{ alojamiento.autor }}</strong>
-            <p style="color: #6c757d;">{{ alojamiento.descripcion }}</p>
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden" style="transition: all 0.3s ease;">
+                <div class="position-relative">
+                    {% with imgs=alojamiento.imagenes.all imgs_count=alojamiento.imagenes.count %}
+                    {% if imgs_count > 1 %}
+                        <!-- Mini Carrusel para múltiples fotos -->
+                        <div id="miniCarousel{{ alojamiento.id }}" class="carousel slide mini-carousel" data-bs-ride="false">
+                            <div class="carousel-inner">
+                                {% for img in imgs %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img src="{{ img.imagen.url }}" alt="{{ alojamiento.nombre }} - foto {{ forloop.counter }}">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button class="mini-carousel-btn prev" type="button" data-bs-target="#miniCarousel{{ alojamiento.id }}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="mini-carousel-btn next" type="button" data-bs-target="#miniCarousel{{ alojamiento.id }}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                            <span class="mini-img-counter">{{ imgs_count }} fotos</span>
+                        </div>
+                    {% elif imgs_count == 1 %}
+                        <img src="{{ imgs.0.imagen.url }}" class="card-img-top" alt="{{ alojamiento.nombre }}" style="height: 250px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 250px; border-radius: 12px 12px 0 0;">
+                            <i class="fas fa-hotel fa-3x text-secondary opacity-25"></i>
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+                    <div class="position-absolute top-0 end-0 m-3" style="z-index: 6;">
+                        <span class="badge bg-white text-dark shadow-sm fs-6 px-3 py-2 rounded-pill">
+                            $ {{ alojamiento.precio }} <small>COP</small>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold mb-0 text-truncate" title="{{ alojamiento.nombre }}">{{ alojamiento.nombre }}</h5>
+                    </div>
+                    
+                    <p class="card-text text-secondary mb-3"><i class="fas fa-map-marker-alt me-1 text-success"></i> {{ alojamiento.direccion }}</p>
+                    
+                    <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+                        {% for categoria in alojamiento.categorias.all %}
+                        <span class="badge bg-success-subtle text-success rounded-pill px-3">{{ categoria.nombre }}</span>
+                        {% endfor %}
+                        {% if alojamiento.usuario.verificado %}
+                        <span class="badge rounded-pill px-2" style="background: linear-gradient(135deg, #2D5A27, #3d7a35); color: white; font-size: 0.7rem;">
+                            <i class="fas fa-check-circle me-1"></i>Verificado
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    {% if alojamiento.promedio %}
+                    <div class="mb-2">
+                        <span style="color: #FA9E1B; letter-spacing: 1px; font-size: 0.85rem;">
+                            {% for i in "12345" %}{% if forloop.counter <= alojamiento.promedio %}<i class="fas fa-star"></i>{% else %}<i class="fas fa-star" style="color: #ddd;"></i>{% endif %}{% endfor %}
+                        </span>
+                        <small class="text-muted ms-1">{{ alojamiento.promedio|floatformat:1 }}</small>
+                    </div>
+                    {% endif %}
+                    
+                    <p class="card-text text-secondary mb-4">{{ alojamiento.descripcion|truncatewords:15 }}</p>
+                    
+                    <div class="mt-auto d-flex justify-content-between align-items-center gap-2">
+                        {% if alojamiento.usuario.telefono %}
+                        <a href="https://wa.me/57{{ alojamiento.usuario.telefono }}?text=Hola,%20me%20interesa%20el%20alojamiento%20{{ alojamiento.nombre }}" 
+                           target="_blank" 
+                           class="btn btn-success rounded-pill btn-sm px-3 shadow-sm"
+                           title="Contactar por WhatsApp">
+                            <i class="fab fa-whatsapp fs-5"></i>
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'alojamientos:alojamiento_detalle' alojamiento.id %}" class="btn btn-outline-success rounded-pill fw-bold btn-sm flex-grow-1">
+                            Ver Detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <hr style="border-top: 1px solid #dee2e6;">
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No hay alojamientos disponibles en este momento.
+            </div>
+        </div>
         {% endfor %}
     </div>
-</section>
+
+    <!-- Paginación -->
+    {% if alojamientos.has_other_pages %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if alojamientos.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ alojamientos.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for i in alojamientos.paginator.page_range %}
+                    <li class="page-item {% if alojamientos.number == i %}active{% endif %}">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if alojamientos.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ alojamientos.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
 
 {% endblock %}

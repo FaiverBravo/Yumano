@@ -1,0 +1,208 @@
+{% extends "YumanoApp/base_modern.html" %}
+{% load static %}
+
+{% block title %}YÚMANO | Red ancestral, guía digital{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <!-- Video de fondo con poster de fallback -->
+    <video autoplay muted loop playsinline class="hero-video" poster="{% static 'images/inicio/home_slider.jpg' %}" id="heroVideo">
+        <source src="{% static 'images/inicio/hero_video.mp4' %}" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    
+    <div class="hero-content">
+        <h1 class="display-2 fw-bold animate-stagger-1">DESCUBRE</h1>
+        <p class="fs-4 mb-4 animate-stagger-2">La magia ancestral de San Agustín Huila</p>
+        <div class="d-flex justify-content-center gap-3 animate-stagger-3">
+            <a href="{% url 'registro' %}" class="btn btn-premium btn-lg">Hazte Anfitrión</a>
+            <a href="{% url 'Mapa' %}" class="btn btn-outline-light btn-lg rounded-pill px-5">Explorar Mapa</a>
+        </div>
+    </div>
+    
+    <!-- Indicador de scroll animado -->
+    <div class="scroll-indicator">
+        <a href="#content-start" class="scroll-link">
+            <i class="fa-solid fa-chevron-down scroll-indicator-icon"></i>
+        </a>
+    </div>
+</section>
+
+<!-- ID para anclar el scroll del indicador -->
+<div id="content-start"></div>
+
+<!-- Categorías Section -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5 scroll-reveal">
+            <h2 class="display-5 fw-bold mb-3">¿Qué estás buscando?</h2>
+            <p class="text-secondary lead">Planifica tu viaje con la mejor selección de empresas turísticas</p>
+        </div>
+        
+        <div class="row g-4 justify-content-center mobile-scroll-row">
+            <!-- Alojamientos -->
+            <div class="col-lg-4 col-md-6 scroll-reveal scroll-reveal-delay-1">
+                <a href="{% url 'alojamientos:Alojamientos' %}" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="{% static 'images/alojamientos/masaya.jpg' %}" alt="Alojamientos">
+                        <div class="category-overlay">
+                            <h3>Alojamientos</h3>
+                            <p class="mb-0">Hoteles, Glampings y más</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Experiencias -->
+            <div class="col-lg-4 col-md-6 scroll-reveal scroll-reveal-delay-2">
+                <a href="{% url 'experiencias:Experiencias' %}" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="{% static 'images/inicio/elcinco1.jpg' %}" alt="Experiencias">
+                        <div class="category-overlay">
+                            <h3>Experiencias</h3>
+                            <p class="mb-0">Aventura y Cultura</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Gastronomía -->
+            <div class="col-lg-4 col-md-6 scroll-reveal scroll-reveal-delay-3">
+                <a href="{% url 'gastronomia:Gastronomia' %}" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="{% static 'images/gastronomia/r2.jpg' %}" alt="Gastronomía">
+                        <div class="category-overlay">
+                            <h3>Gastronomía</h3>
+                            <p class="mb-0">Sabor Auténtico</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Tienda -->
+            <div class="col-lg-4 col-md-6 scroll-reveal scroll-reveal-delay-1">
+                <a href="{% url 'tienda:Tienda' %}" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="{% static 'images/inicio/arqueologico3.jpg' %}" alt="Tienda">
+                        <div class="category-overlay">
+                            <h3>Artesanías</h3>
+                            <p class="mb-0">Recuerdos con Historia</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Servicios -->
+            <div class="col-lg-4 col-md-6 scroll-reveal scroll-reveal-delay-2">
+                <a href="{% url 'servicios:Servicios' %}" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="{% static 'images/inicio/home_slider.jpg' %}" alt="Servicios">
+                        <div class="category-overlay">
+                            <h3>Servicios</h3>
+                            <p class="mb-0">Guías y Transporte</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Destinos Populares -->
+<section class="section-padding bg-light">
+    <div class="container">
+        <div class="text-center mb-5 scroll-reveal">
+            <h2 class="display-6 fw-bold">Destinos Imperdibles</h2>
+            <div class="mx-auto bg-success" style="width: 60px; height: 4px; border-radius: 2px;"></div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Parque Arqueológico -->
+            <div class="col-lg-4 col-md-6 scroll-reveal scroll-reveal-delay-1">
+                <div class="dest-card p-2">
+                    <div class="dest-img rounded-4" style="background-image: url('{% static "images/inicio/arqueologico3.jpg" %}');"></div>
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0">Parque Arqueológico</h5>
+                            <span class="badge bg-success-subtle text-success">Cultura</span>
+                        </div>
+                        <p class="text-secondary small">La entrada tiene un valor diferencial para nacionales y extranjeros. Menores de 12 años gratis.</p>
+                        <hr class="my-3 opacity-25">
+                        <div class="d-flex align-items-center text-warning">
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <span class="ms-2 small fw-bold">5.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estrecho del Magdalena -->
+            <div class="col-lg-4 col-md-6 scroll-reveal scroll-reveal-delay-2">
+                <div class="dest-card p-2">
+                    <div class="dest-img rounded-4" style="background-image: url('{% static "images/inicio/estrecho1.jpg" %}');"></div>
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0">El Estrecho</h5>
+                            <span class="badge bg-info-subtle text-info">Naturaleza</span>
+                        </div>
+                        <p class="text-secondary small">Visita el punto más angosto del río más importante de Colombia. Paisajes impresionantes.</p>
+                        <hr class="my-3 opacity-25">
+                        <div class="d-flex align-items-center text-warning">
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <span class="ms-2 small fw-bold">4.9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alto de los Idolos -->
+            <div class="col-lg-4 col-md-6 scroll-reveal scroll-reveal-delay-3">
+                <div class="dest-card p-2">
+                    <div class="dest-img rounded-4" style="background-image: url('{% static "images/inicio/idolos2.jpg" %}');"></div>
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0">Alto de los Ídolos</h5>
+                            <span class="badge bg-success-subtle text-success">Cultura</span>
+                        </div>
+                        <p class="text-secondary small">Ubicado en Isnos, es el parque con los túmulos funerarios más grandes de la región.</p>
+                        <hr class="my-3 opacity-25">
+                        <div class="d-flex align-items-center text-warning">
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star small"></i>
+                            <i class="fas fa-star-half-alt small"></i>
+                            <span class="ms-2 small fw-bold">4.8</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="section-padding scroll-reveal">
+    <div class="container">
+        <div class="glass-card bg-success text-white p-5 rounded-5 text-center">
+            <h2 class="display-5 mb-4">¿Tienes una empresa turística?</h2>
+            <p class="lead mb-4">Únete a la red más grande de prestadores de servicios en San Agustín y aumenta tu visibilidad.</p>
+            <a href="{% url 'registro' %}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-success">Registrar mi Negocio</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/home.js' %}"></script>
+{% endblock %}

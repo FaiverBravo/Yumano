@@ -1,157 +1,76 @@
-{% extends "WakaTurApp/base2.html" %}
+{% extends "YumanoApp/base_modern.html" %}
 
 {% load static %}
 
-{% block title %}	WakaTur │ Contacto	{% endblock %}
+{% block title %}	YÚMANO │ Contacto	{% endblock %}
 
 {% block content %}
-<!-- Home -->
-
-<div class="super_container">
-
-	<div class="home">
-		<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{% static 'images/inicio/atardecer1.jpg' %}">
-		</div>
-		<div class="home_content">
-			<div class="home_title">Contacto</div>
-		</div>
-	</div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-lg rounded-3 border-0">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 70px; height: 70px;">
+                            <i class="fas fa-user-plus fa-2x text-white"></i>
+                        </div>
+                        <h3>Contáctanos</h3>
+                        <p class="text-muted">Completa el formulario para registrarte</p>
+                    </div>
 	
-	<!-- Contact -->
-<div>
-	{% if "valido" in request.GET %}
-		<div class="alert alert-success" role="alert">
-			<p>Información enviada correctamente, gracias!</p>
-	    </div>
-	{% endif %}
+						{% if request.GET.valido %}
+							<div class="alert alert-success">Tu mensaje se envió correctamente.</div>
+						{% elif request.GET.novalido %}
+							<div class="alert alert-danger">Hubo un error al enviar el mensaje.</div>
+						{% endif %}
 
-	<form action="" method="post">
-		{% csrf_token %}
-		<table style="color:black; margin: 20px auto;">{{miFormulario.as_table}}</table>
-		<input type="submit" value="Enviar" style="width: 150px;">
-	</form>
-	
-</div>
-
-<!--
-	<div class="contact_form_section">
-		<div class="container">
-			<div class="row">
-				<div class="col">
---> 
-					
-					<!-- Contact Form -->
-<!--<div>
-						iv class="contact_form_container">
-						<div class="contact_title text-center">Pongase en contacto</div>
-							{% if "valido" in request.GET %}
-								<div class="alert alert-success" role="alert">
-									<p>Información enviada correctamente, gracias!</p>
+						<form method="post" >
+							{% csrf_token %}
+							
+							<div class="mb-3">
+								<label for="id_nombre" class="form-label">Nombre</label>								
+								<div class="input-group">
+									<span class="input-group-text bg-white"><i class="fas fa-user"></i></span>	
+									<input type="text" id="id_nombre" name="nombre" placeholder="Tu nombre" required class="form-control" style="color: black;">							
 								</div>
-						
-								{% endif %}
-							
-								{% csrf_token %}
-								<table type="text" id="contact_form_name"class="contact_form_name input_field ">{{miFormulario.as_table}}</table>
-								
-							<button type="submit" id="form_submit_button" class="form_submit_button button trans_200" >enviar mensaje<span></span><span></span><span></span></button>
-							</form>
-							
-						</div>
-					</div>
+							</div>
 
-				</div>
-			</div>
-		</div>
-	</div>
+							<div class="mb-3">
+                            	<label for="id_email" class="form-label">Correo Electrónico</label>
+                            	<div class="input-group">
+                            	    <span class="input-group-text bg-white"><i class="fas fa-envelope"></i></span>
+                            	    <input type="email" id="id_email" name="email" placeholder="tu@correo.com" required class="form-control" style="color: black;">
+                            	</div>								
+							</div>
+                        
+							<div class="mb-3">
+								<label for="id_asunto" class="form-label">Asunto</label>
+								<div class="input-group">
+									<span class="input-group-text bg-white"><i class="fa-solid fa-user-pen "></i></span>
+									<input type="text" id="id_asunto" name="asunto" placeholder="Asunto" required class="form-control" style="color: black;">
+								</div>
+							</div>
 
-	<div class="contact_form_section">
-		<div class="container">
-			<div class="row">
-				<div class="col">
---->
-					<!-- Contact Form -->
-<!--					<div class="contact_form_container">
-						<div class="contact_title text-center">Pongase en contacto</div>
-						<form action="#" id="contact_form" class="contact_form text-center">
-							<input type="text" id="contact_form_name" class="contact_form_name input_field" placeholder="Nombre" required="required" data-error="Name is required.">
-							<input type="text" id="contact_form_email" class="contact_form_email input_field" placeholder="E-mail" required="required" data-error="Email is required.">
-							<input type="text" id="contact_form_subject" class="contact_form_subject input_field" placeholder="Asunto" required="required" data-error="Subject is required.">
-							<textarea id="contact_form_message" class="text_field contact_form_message" name="message" rows="4" placeholder="Mensaje" required="required" data-error="Please, write us a message."></textarea>
-							<button type="submit" id="form_submit_button" class="form_submit_button button trans_200">enviar mensaje<span></span><span></span><span></span></button>
+							<div class="mb-3">
+								<label for="id_mensaje" class="form-label">Mensaje</label>
+								<div class="input-group">
+									<span class="input-group-text bg-white"><i class="fas fa-id-card"></i></span>
+									<textarea id="id_mensaje" name="mensaje" placeholder="Tu Mensaje" required class="form-control" rows="5" style="color: black;"></textarea>
+								</div>
+							</div>
+
+							<div class="d-grid">
+								<button type="submit" class="btn btn-warning py-2">
+									<i class="fas fa-paper-plane me-2"></i>Enviar
+								</button>
+							</div>
+							
 						</form>
 					</div>
 
 				</div>
-			</div>
-		</div>
-	</div>
--->
-	<!-- About -->
-<!-- 	<div class="about">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-5">
-	-->				
-	
-					<!-- About - Image -->
-<!--
-					<div class="about_image">
-						<img src="{% static 'images/inicio/man.png' %}" alt="">
-					</div>
-
-				</div>
-
-				<div class="col-lg-4">
-	-->				
-					<!-- About - Content -->
-<!--
-					<div class="about_content">
-						<div class="logo_container about_logo">
-							<div class="logo"><a href="#"><img src="{% static 'images/iconos/logof.png' %}" alt="">WakaTur</a></div>
-						</div>
-						<p class="about_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis vu lputate eros, iaculis consequat nisl. Nunc et suscipit urna. Integer eleme ntum orci eu vehicula iaculis consequat nisl. Nunc et suscipit urna pretium.</p>
-						
-						<ul class="about_social_list">
-							<li class="about_social_item"><a href="#"><i class="fa fa-pinterest"></i></a></li>
-							<li class="about_social_item"><a href="#"><i class="fa fa-facebook-f"></i></a></li>
-							<li class="about_social_item"><a href="#"><i class="fa fa-twitter"></i></a></li>
-							<li class="about_social_item"><a href="#"><i class="fa fa-linkedin"></i></a></li>
-							<li class="about_social_item"><a href="#"><i class="fa fa-instagram"></i></a></li>
-						</ul>
-					</div>
-
-				</div>
-
-				<div class="col-lg-3">
--->					
-					<!-- About Info -->
-<!-- 
-					<div class="about_info">
-						<ul class="contact_info_list">
-							<li class="contact_info_item d-flex flex-row">
-								<div><div class="contact_info_icon"><img src="{% static 'images/iconos/placeholder.svg' %}" alt=""></div></div>
-								<div class="contact_info_text">Calle 4a # 19a - 17 San Agustín-Huila-COL</div>
-							</li>
-							<li class="contact_info_item d-flex flex-row">
-								<div><div class="contact_info_icon"><img src="{% static 'images/iconos/phone-call.svg' %}" alt=""></div></div>
-								<div class="contact_info_text">+57 3103409882</div>
-							</li>
-							<li class="contact_info_item d-flex flex-row">
-								<div><div class="contact_info_icon"><img src="{% static 'images/iconos/message.svg' %}" alt=""></div></div>
-								<div class="contact_info_text"><a href="mailto:contactme@gmail.com?Subject=Hello" target="_top">faivertkd@gmail.com</a></div>
-							</li>
-							<li class="contact_info_item d-flex flex-row">
-								<div><div class="contact_info_icon"><img src="{% static 'images/iconos/planet-earth.svg' %}" alt=""></div></div>
-								<div class="contact_info_text"><a href="">www.faiverbravo.github.io/locate/</a></div>
-							</li>
-						</ul>
-					</div>
-
-				</div>
-
-			</div>
-		</div>
-	</div>
--->
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %} 

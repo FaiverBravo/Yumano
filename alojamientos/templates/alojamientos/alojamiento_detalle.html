@@ -1,131 +1,367 @@
-{% extends "WakaTurApp/base2.html" %}
-
+{% extends "YumanoApp/base_modern.html" %}
 {% load static %}
 
+{% block title %}YÚMANO │ {{ alojamiento.nombre }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="{% static 'css/alojamiento_detalle.css' %}">
+{% endblock %}
+
 {% block content %}
-<!-- Home -->
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'Inicio' %}" class="text-decoration-none text-success">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'alojamientos:Alojamientos' %}" class="text-decoration-none text-success">Alojamientos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ alojamiento.nombre }}</li>
+        </ol>
+    </nav>
 
-<div class="home">
-    <div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{alojamiento.imagen.url}}"></div>
-    <div class="home_content">
-        <div class="home_title">{{alojamiento.nombre}}</div>
-    </div>
-</div>
+    <div class="row g-5">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold mb-3">
+                {{ alojamiento.nombre }}
+                {% if alojamiento.usuario.verificado %}
+                <span class="badge badge-verified rounded-pill align-middle fs-6 ms-2"><i class="fas fa-check-circle me-1"></i>Verificado</span>
+                {% endif %}
+            </h1>
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <p class="text-secondary mb-0"><i class="fas fa-map-marker-alt me-2 text-success"></i>{{ alojamiento.direccion }}</p>
+                {% if promedio_calificacion %}
+                <span class="stars-display">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= promedio_calificacion %}<i class="fas fa-star"></i>{% else %}<i class="fas fa-star empty"></i>{% endif %}
+                    {% endfor %}
+                </span>
+                <span class="text-muted small">({{ promedio_calificacion }} / 5 · {{ total_resenas }} reseñas)</span>
+                {% endif %}
+            </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <!-- Offers Grid -->
-            <div class="offers_grid">
-                <!-- Offers Item -->
-                <div class="offers_item rating_4">
-                    <div class="row">
-                        <div class="col-lg-1 temp_col"></div>
-                        <div class="col-lg-3 col-1680-4">
-                            <div class="offers_image_container">
-                                <div class="offers_image_background" style="background-image:url('{{alojamiento.imagen.url}}')"></div>
-                                <div class="offer_name"><a href="alojamiento_detalle/{{alojamiento.id}}">{{alojamiento.nombre}}</a></div>
+            <!-- Gallery Carousel -->
+            <div class="mb-5">
+                {% with imagenes=alojamiento.imagenes.all imagenes_count=alojamiento.imagenes.count %}
+                {% if imagenes_count > 1 %}
+                    <!-- Carousel for multiple images -->
+                    <div class="position-relative mb-3">
+                        <div id="galeriaCarousel" class="carousel slide carousel-gallery" data-bs-ride="carousel" data-bs-interval="5000">
+                            <div class="carousel-indicators">
+                                {% for imagen in imagenes %}
+                                    <button type="button" data-bs-target="#galeriaCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Foto {{ forloop.counter }}"></button>
+                                {% endfor %}
+                            </div>
+                            <div class="carousel-inner">
+                                {% for imagen in imagenes %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img src="{{ imagen.imagen.url }}" class="d-block w-100" alt="{{ alojamiento.nombre }} - Foto {{ forloop.counter }}">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#galeriaCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#galeriaCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                        </div>
+                        <span class="carousel-counter" id="carouselCounter">1 / {{ imagenes_count }}</span>
+                    </div>
+
+                    <!-- Thumbnails -->
+                    <div class="row g-2">
+                        {% for imagen in imagenes %}
+                        <div class="col-3 col-md-2">
+                            <img src="{{ imagen.imagen.url }}" class="w-100 gallery-thumb {% if forloop.first %}active{% endif %}"
+                                 data-bs-target="#galeriaCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                                 alt="Miniatura {{ forloop.counter }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% elif imagenes_count == 1 %}
+                    <!-- Single image (no carousel needed) -->
+                    {% with primera_imagen=imagenes.0 %}
+                        <div class="carousel-gallery">
+                            <img src="{{ primera_imagen.imagen.url }}" class="w-100" style="height: 500px; object-fit: cover;" alt="{{ alojamiento.nombre }}">
+                        </div>
+                    {% endwith %}
+                {% else %}
+                    <!-- No images placeholder -->
+                    <div class="carousel-gallery d-flex align-items-center justify-content-center" style="height: 350px; background: #f0f0f0;">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-image fa-4x mb-3 opacity-25"></i>
+                            <p class="mb-0">No hay imágenes disponibles</p>
+                        </div>
+                    </div>
+                {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Tabs/Sections -->
+            <div class="glass-card mb-5 border-0 shadow-sm p-4">
+                <h4 class="fw-bold mb-4">Sobre este alojamiento</h4>
+                <p class="lead text-secondary">{{ alojamiento.descripcion }}</p>
+                
+                <div class="row mt-5 g-4">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success-subtle p-3 rounded-circle me-3">
+                                <i class="fas fa-bed text-success fs-4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Habitaciones</small>
+                                <span class="fw-bold">{{ alojamiento.habitaciones_disponibles }} Disponibles</span>
                             </div>
                         </div>
-                        <div class="col-lg-8">
-                            <div class="offers_content">
-                                <div class="offers_price">$ {{alojamiento.precio}}<span> por noche</span></div>
-                                <div class="rating_r rating_r_5 offers_rating" data-rating="4">
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                </div>
-                                <p class="offers_text">{{alojamiento.descripcion}}</p>
-                                <div class="offers_icons">
-                                    <ul class="offers_icons_list">
-                                        <li class="offers_icons_item"><img src="{% static 'images/iconos/post.png' %}" alt=""></li>
-                                        <li class="offers_icons_item"><img src="{% static 'images/iconos/compass.png' %}" alt=""></li>
-                                        <li class="offers_icons_item"><img src="{% static 'images/iconos/bicycle.png' %}" alt=""></li>
-                                        <li class="offers_icons_item"><img src="{% static 'images/iconos/post.png' %}" alt=""></li>
-                                    </ul>
-                                </div>
-                                <div class="button book_button"><a href="{% url 'Alojamientos' %}">Regresar<span></span><span></span><span></span></a></div>
-                                <div class="offer_reviews">
-                                    <div class="offer_reviews_content">
-                                        <div class="offer_reviews_title">very good</div>
-                                        <div class="offer_reviews_subtitle">100 reviews</div>
-                                    </div>
-                                    <div class="offer_reviews_rating text-center">8.1</div>
-                                    <p class="offers_text">Disponibilidad: {% if alojamiento.disponibilidad %} <span style="color: #00b300;">Disponible</span>{% else %}Cerrado{% endif %}</p>
-                                    <p class="offers_text">Habitaciones disponibles: <span class="offer_reviews_title" style="color: #320038;">{{ alojamiento.habitaciones_disponibles }}</span></p>
-                                    <p class="offers_text">Abre: {{ alojamiento.abrir }}</p>
-                                    <p class="offers_text">Cierra: {{ alojamiento.cerrar }}</p>
-                                    <p class="offers_text">Cerrado: {{ alojamiento.dd }}</p>
-                                </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary-subtle p-3 rounded-circle me-3">
+                                <i class="fas fa-clock text-primary fs-4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Horario</small>
+                                <span class="fw-bold">{{ alojamiento.horario }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning-subtle p-3 rounded-circle me-3">
+                                <i class="fas fa-star text-warning fs-4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Valoración</small>
+                                <span class="fw-bold">{% if promedio_calificacion %}{{ promedio_calificacion }} / 5.0{% else %}Sin reseñas{% endif %}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<br>
-<br>
-<br>
-<!-- Sección de Comentarios -->
-<section class="categorias-container">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="section_title_container text-center">
-                    <h2 class="section_title">Comentarios</h2>
+
+            <!-- Location Map & Details -->
+            <div class="mb-5">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                    <h4 class="fw-bold mb-0"><i class="fas fa-map-marked-alt text-success me-2"></i>Ubicación</h4>
+                    <div class="d-flex gap-2">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ alojamiento.coordenadas|default:alojamiento.direccion|urlencode }}" 
+                           target="_blank" rel="noopener noreferrer" 
+                           class="btn btn-sm btn-outline-success rounded-pill px-3">
+                            <i class="fas fa-directions me-1"></i>Cómo llegar
+                        </a>
+                        <a href="{% url 'Mapa' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                            <i class="fas fa-globe-americas me-1"></i>Ver en Mapa General
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card border-0 bg-light-subtle rounded-4 p-3 mb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success-subtle text-success p-2 rounded-circle me-3">
+                            <i class="fas fa-location-dot fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="fw-bold d-block">{{ alojamiento.direccion }}</span>
+                            <small class="text-muted">San Agustín, Huila, Colombia {% if alojamiento.coordenadas %}· Coordenadas: {{ alojamiento.coordenadas }}{% endif %}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="map" 
+                     class="shadow-sm rounded-4"
+                     data-coordenadas="{{ alojamiento.coordenadas }}"
+                     data-nombre="{{ alojamiento.nombre }}"
+                     data-direccion="{{ alojamiento.direccion }}"
+                     data-precio="{{ alojamiento.precio|default:0 }}">
+                </div>
+                <small class="text-muted mt-2 d-block text-end"><i class="fas fa-info-circle me-1"></i>Usa los controles +/- o haz clic en el mapa para acercar/alejar sin interrumpir el desplazamiento de la página.</small>
+            </div>
+
+            <!-- Reseñas -->
+            <div class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0"><i class="fas fa-star text-warning me-2"></i>Reseñas ({{ total_resenas }})</h4>
+                    {% if user.is_authenticated %}
+                    <button class="btn btn-outline-success rounded-pill px-4" data-bs-toggle="collapse" data-bs-target="#commentForm">
+                        <i class="fas fa-pen me-1"></i>Dejar reseña
+                    </button>
+                    {% endif %}
+                </div>
+
+                {% if user.is_authenticated %}
+                <div class="collapse mb-4" id="commentForm">
+                    <div class="card card-body border-0 shadow-sm rounded-4">
+                        <form action="{% url 'alojamientos:add_post' alojamiento.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small">Tu calificación</label>
+                                <div class="star-rating">
+                                    <input type="radio" id="star5" name="calificacion" value="5" checked><label for="star5"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="star4" name="calificacion" value="4"><label for="star4"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="star3" name="calificacion" value="3"><label for="star3"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="star2" name="calificacion" value="2"><label for="star2"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="star1" name="calificacion" value="1"><label for="star1"><i class="fas fa-star"></i></label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control rounded-4 p-3" name="descripcion" rows="3" placeholder="Cuéntanos tu experiencia..." required maxlength="300"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-premium w-100">Publicar Reseña</button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row g-4">
+                    {% for post in alojamiento.posts.all %}
+                    <div class="col-12">
+                        <div class="glass-card border-0 shadow-sm p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; font-weight: 700;">
+                                    {{ post.autor.username|first|upper }}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h6 class="mb-0 fw-bold">{{ post.autor.username }}</h6>
+                                        {% if post.autor.verificado %}
+                                        <span class="badge badge-verified rounded-pill" style="font-size: 0.65rem;"><i class="fas fa-check"></i></span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="stars-display" style="font-size: 0.8rem;">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= post.calificacion %}<i class="fas fa-star"></i>{% else %}<i class="fas fa-star empty"></i>{% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <small class="text-muted">{{ post.created|date:"d M Y" }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mb-0 text-secondary">{{ post.descripcion }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-comments fa-3x text-muted mb-3 opacity-25"></i>
+                        <p class="text-muted">Aún no hay reseñas. ¡Sé el primero en opinar!</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
-        <div class="row categorias_items">
-            {% for post in posts %}
-            <div class="col-lg-12">
-                <div class="categorias_item">
-                    <div class="categorias_image"><img src="{% static 'images/categorias_1.jpg' %}" alt=""></div>
-                    <div class="categorias_content">
-                        <div class="categorias_title"><a href="#">{{ post.autor }}</a></div>
-                        <div class="categorias_text">{{ post.descripcion }}</div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sticky-sidebar">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <span class="text-muted small d-block">Desde</span>
+                            <h2 class="fw-bold mb-0 text-success">$ {{ alojamiento.precio }} <small class="fs-6 text-muted fw-normal">COP / noche</small></h2>
+                        </div>
+
+                        <form action="{% url 'alojamientos:reservar_alojamiento' alojamiento.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Fecha de entrada</label>
+                                <input type="date" class="form-control rounded-pill" id="fecha_inicio" name="fecha_inicio" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Fecha de salida</label>
+                                <input type="date" class="form-control rounded-pill" id="fecha_fin" name="fecha_fin" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold">Personas</label>
+                                <select class="form-select rounded-pill" id="num_personas" name="num_personas">
+                                    <option value="1">1 Persona</option>
+                                    <option value="2">2 Personas</option>
+                                    <option value="3">3 Personas</option>
+                                    <option value="4">4+ Personas</option>
+                                </select>
+                            </div>
+
+                            <div id="priceSummary" class="bg-light p-3 rounded-4 mb-4 d-none">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted"><span id="daysCount">0</span> noches</span>
+                                    <span id="basePrice">$0</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total</span>
+                                    <span class="text-success" id="totalPrice">$0</span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-premium w-100 rounded-pill py-3 fw-bold" {% if not alojamiento.disponibilidad %}disabled{% endif %}>
+                                {% if alojamiento.disponibilidad %}Reservar ahora{% else %}No disponible{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Host Info -->
+                <div class="glass-card border-0 shadow-sm p-4 mb-4">
+                    <h6 class="fw-bold mb-3">Anfitrión</h6>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            {{ alojamiento.usuario.username|first|upper }}
+                        </div>
+                        <div>
+                            <h6 class="mb-0">{{ alojamiento.usuario.username }}</h6>
+                            {% if alojamiento.usuario.verificado %}
+                            <small class="text-success fw-bold"><i class="fas fa-check-circle me-1"></i>Verificado por YÚMANO</small>
+                            {% else %}
+                            <small class="text-muted">Anfitrión</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="https://wa.me/57{{ alojamiento.telefono }}?text=Hola,%20me%20interesa%20el%20alojamiento%20{{ alojamiento.nombre }}" 
+                       target="_blank" 
+                       class="btn btn-success btn-sm w-100 rounded-pill py-2 shadow-sm mb-2">
+                        <i class="fab fa-whatsapp me-2 fs-5"></i>Contactar por WhatsApp
+                    </a>
+                    
+                    <button class="btn {% if es_favorito %}btn-outline-danger{% else %}btn-outline-secondary{% endif %} btn-sm w-100 rounded-pill py-2 fav-btn" data-tipo="alojamiento" data-id="{{ alojamiento.id }}">
+                        {% if es_favorito %}
+                        <i class="fas fa-heart me-2 text-danger"></i>En favoritos
+                        {% else %}
+                        <i class="far fa-heart me-2"></i>Guardar en favoritos
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Motor de Sugerencias (Cerca de aquí) -->
+    {% if sugerencias %}
+    <div class="mt-5 pt-4 border-top">
+        <h3 class="fw-bold mb-4">Descubre Cerca de Aquí</h3>
+        <div class="row g-4">
+            {% for item in sugerencias %}
+            <div class="col-md-4">
+                <div class="glass-card p-0 overflow-hidden h-100 hover-lift border-0 shadow-sm rounded-4">
+                    <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" class="w-100" style="height: 160px; object-fit: cover;">
+                    <div class="p-3">
+                        <span class="badge bg-success-subtle text-success mb-2">Recomendado</span>
+                        <h6 class="fw-bold mb-1">{{ item.nombre }}</h6>
+                        <p class="text-secondary small mb-2 text-truncate">{{ item.descripcion }}</p>
+                        <a href="{% url 'Mapa' %}" class="btn btn-outline-success btn-sm w-100 rounded-pill">Ver en Mapa</a>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
-</section>
+    {% endif %}
 
-<!-- Formulario para dejar un comentario -->
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-12">
-            <h3 style="color: #343a40; text-align: center;">Deja tu comentario</h3>
-            <hr style="border-top: 1px solid #dee2e6;">
-        	<form method="POST">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="autor">Autor</label>
-                    <input type="text" class="form-control" id="autor" name="autor" required>
-                </div>
-                <div class="form-group">
-                    <label for="descripcion">Comentario</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
-                </div>
-				<button type="submit" class="button book_button" style="color: #ffffff;">Enviar</button>
-            </form>
-        </div>
-    </div>
-	<br>
-	</div>
-
+</div>
 {% endblock %}
-<!-- CSS 
-.offer_reviews_title
-{
-	font-size: 12px;
-	font-weight: 700;
-	color: #2d2c2c;
-	text-transform: uppercase;
-}
-	-->
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{% static 'js/alojamiento_detalle.js' %}"></script>
+{% endblock %}

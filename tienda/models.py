@@ -23,13 +23,17 @@ class CategoriaProd(models.Model):
 #     [5, "Apartamentos"],
 #     [6, "Alberges"],
 # ]
+from YumanoApp.models import Usuario
+
 class Producto(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='productos', null=True, blank=True)
     nombre=models.CharField(max_length=50)
     categorias=models.ForeignKey(CategoriaProd, on_delete=models.CASCADE)
-    # tipo_alojamiento=models.IntegerField(choices=tipo_alojamiento)
     imagen=models.ImageField(upload_to="tienda", null=True, blank=True)
     precio=models.FloatField()
     disponibilidad=models.BooleanField(default=True)
+    descripcion=models.CharField(max_length=250, default='')
+    telefono=models.CharField(max_length=15, default='', help_text="Número de contacto (WhatsApp)")
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now_add=True)
 
@@ -37,6 +41,5 @@ class Producto(models.Model):
         verbose_name="Producto"
         verbose_name_plural="Productos"
         
-        # def __str__(self):
-        
-        #         return self.nombre
+    def __str__(self):
+        return self.nombre

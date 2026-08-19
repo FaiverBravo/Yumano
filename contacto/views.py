@@ -1,30 +1,39 @@
 from django.shortcuts import render, redirect
-
-from.forms import FormularioContacto
 from django.core.mail import EmailMessage
-
-# Create your views here.
+from .forms import ContactForm
 
 def contacto(request):
+    form = ContactForm()
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            nombre = form.cleaned_data['nombre']
+            email = form.cleaned_data['email']
+            asunto = form.cleaned_data['asunto']
+            mensaje = form.cleaned_data['mensaje']
 
-    formulario_contacto=FormularioContacto()
+            # Construir el mensaje de correo
+            contenido = f"""
+            El usuario con nombre {nombre} y dirección de email {email} ha enviado el siguiente mensaje:
 
-    if request.method=="POST":
-        formulario_contacto = FormularioContacto(data=request.POST)
-        if formulario_contacto.is_valid():
-            nombre=request.POST.get("nombre")
-            email=request.POST.get("email")
-            asunto=request.POST.get("asunto")
-            mensaje=request.POST.get("mensaje")
+            Asunto: {asunto}
 
+            Contenido:
+            {mensaje}
+            """
 
-            email=EmailMessage("Mensaje desde App WakaTur", 
-            "El usuario con nombre {} con la dirección {} escribe lo siguiente:\n\nAsunto : {}\n\nContenido : {}".format(nombre, email, asunto, mensaje),
-            "",["faivertkd@gmail.com"], reply_to=[email])
+            email = EmailMessage(
+                subject="Mensaje desde App YÚMANO",
+                body=contenido,
+                from_email="faivertkd@gmail.com",
+                to=["faivertkd@gmail.com"],
+                reply_to=[email]
+            )
+
             try:
                 email.send()
                 return redirect("/contacto/?valido")
-            except:
-                return redirect("/contacto/?novalido")
+            except:                 
+                 return redirect("/contacto/?novalido")
 
-    return render(request, "contacto/contacto.html", {'miFormulario':formulario_contacto})
+    return render(request, 'contacto/contacto.html', {'form': form})

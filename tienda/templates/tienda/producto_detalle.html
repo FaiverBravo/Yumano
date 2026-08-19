@@ -1,0 +1,99 @@
+{% extends "YumanoApp/base_modern.html" %}
+{% load static %}
+
+{% block title %}YÚMANO │ {{ producto.nombre }}{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 pt-5 mb-5">
+    <!-- Breadcrumb -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'tienda:Tienda' %}" class="text-success text-decoration-none">Tienda</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ producto.nombre }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Imagen y detalles principales -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 450px; object-fit: contain; background-color: #f8f9fa;">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 450px;">
+                    <i class="fas fa-shopping-bag fa-5x text-secondary opacity-25"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body p-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="display-5 fw-bold mb-0">{{ producto.nombre }}</h1>
+                        <span class="badge bg-success-subtle text-success fs-5 px-3 py-2 rounded-pill">
+                            $ {{ producto.precio }} <small>COP</small>
+                        </span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <span class="badge bg-light text-dark border p-2">
+                            <i class="fas fa-tag text-success me-1"></i> {{ producto.categorias.nombre }}
+                        </span>
+                        {% if producto.disponibilidad %}
+                        <span class="badge bg-success text-light p-2 ms-2">Disponible</span>
+                        {% else %}
+                        <span class="badge bg-danger text-light p-2 ms-2">Agotado</span>
+                        {% endif %}
+                    </div>
+                    
+                    <h5 class="fw-bold mb-3">Acerca de este producto</h5>
+                    <p class="fs-5 text-secondary" style="line-height: 1.8;">
+                        {{ producto.descripcion }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información lateral y acciones -->
+        <div class="col-lg-4">
+            <!-- Tarjeta de compra -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4 sticky-top" style="top: 100px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">¿Te interesa este producto?</h4>
+                    
+                    <div class="mb-4 p-3 bg-light rounded-3 text-center">
+                        <p class="mb-0 text-secondary">
+                            <i class="fas fa-info-circle me-1 text-success"></i>
+                            Las compras se realizan directamente con el artesano o vendedor local.
+                        </p>
+                    </div>
+                    
+                    <div class="d-grid gap-3">
+                        <a href="https://wa.me/57{{ producto.telefono }}?text=Hola,%20me%20interesa%20el%20producto%20{{ producto.nombre }}" 
+                           target="_blank" 
+                           class="btn btn-premium btn-lg rounded-pill fw-bold" {% if not producto.disponibilidad %}style="pointer-events: none; opacity: 0.5;"{% endif %}>
+                            <i class="fab fa-whatsapp me-2"></i>Contactar por WhatsApp
+                        </a>
+                        
+                        <button class="btn {% if es_favorito %}btn-outline-danger{% else %}btn-outline-secondary{% endif %} btn-lg rounded-pill fw-bold fav-btn" data-tipo="producto" data-id="{{ producto.id }}">
+                            {% if es_favorito %}
+                            <i class="fas fa-heart me-2 text-danger"></i>En favoritos
+                            {% else %}
+                            <i class="far fa-heart me-2"></i>Guardar en favoritos
+                            {% endif %}
+                        </button>
+                    </div>
+                    
+                    <div class="mt-4 text-center">
+                        <p class="text-muted small mb-0"><i class="fas fa-hand-holding-heart me-1 text-success"></i> Apoya el talento local de San Agustín</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
